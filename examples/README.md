@@ -78,6 +78,16 @@ The decision model can be written in numpy, PyTorch or anything else that return
 
 The script does not weigh deaths against days on *B*. That trade-off belongs to the decision model, and the table gives what is needed to apply one.
 
+## How do published decision rules compare?
+
+`decision_frontier.py` puts four published decision rules (`decision_rules.py`) on the trade-off between the patient and the community.
+
+```bash
+.venv/bin/python -I examples/decision_frontier.py
+```
+
+The `Belief` rule steps up once P(*A* fails), updated daily from the vital signs, passes a threshold. Sweeping the threshold gives deaths averted against days on *B*, on the same patients throughout. Each published rule is linear in P(*A* fails), so it steps up exactly when the probability passes its own effective threshold, and it is a point on that curve. The figure marks each rule at illustrative settings, with a bar for where its plausible settings put it. The bars are much wider than the gaps between rules: what a rule recommends depends more on its parameter values than on which rule it is. The figure needs matplotlib, which the simulator itself does not.
+
 ## Caveats
 
 The parameters describe a synthetic US-like site calibrated to published figures. They are not estimates for any real hospital, and the harm of an ineffective first drug is not pinned down, which is why the script reports three outcome settings. Results should be compared across all three. Nothing here is guidance on prescribing.

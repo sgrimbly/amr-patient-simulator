@@ -17,3 +17,6 @@ dist/
 
 # Local, non-public material
 private/
+
+# Example outputs
+examples/output/

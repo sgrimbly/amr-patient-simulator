@@ -54,7 +54,8 @@ def truth(world, env_params) -> dict:
     x = E._arrays(world, None, e)
     bact = np.asarray(x["bact"])
     a_fails = bact & (np.asarray(x["a_A"]) < 0.5)
-    return {"bacterial": bact, "a_fails": a_fails, "b_helps": a_fails & (np.asarray(x["a_B"]) > 0.5)}
+    b_works = np.asarray(x["a_B"]) > 0.5
+    return {"bacterial": bact, "a_fails": a_fails, "b_helps": a_fails & b_works, "b_fails": bact & ~b_works}
 
 
 def auroc(score, label):

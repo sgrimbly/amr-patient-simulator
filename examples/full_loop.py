@@ -58,6 +58,22 @@ def print_trace(i, r, p_fail, truth, world):
     print(f"    died by day 30: {'yes' if r['died'][i] else 'no'}")
 
 
+def simulate_site(theta1, n, params=CALIBRATED_US_SITE) -> dict:
+    """Steps 1 and 2: train the predictor on a historical cohort's culture results, then simulate new patients and
+    predict P(drug A fails) from their records. Returns the new cohort with its predictions and hidden truth."""
+    world_params, env_params = calibrated_site(theta1, params)
+    hist = sample_world(1, n, world_params)
+    hist_obs = observe(1, hist, world_params)
+    y, labelled = pred.culture_labels(hist, hist_obs)
+    model = pred.Logistic().fit(pred.record_table(hist, hist_obs)[labelled], y[labelled])
+    world = sample_world(2, n, world_params, start_id=n)
+    obs = observe(2, world, world_params)
+    p_fail = model.predict(pred.record_table(world, obs))
+    y_new, lab_new = pred.culture_labels(world, obs)
+    return dict(world=world, obs=obs, env_params=env_params, p_fail=p_fail, truth=pred.truth(world, env_params),
+                auroc_culture=pred.auroc(p_fail[lab_new], y_new[lab_new]))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=50_000)
@@ -66,22 +82,10 @@ def main():
     args = ap.parse_args()
 
     for theta1 in args.theta1:
-        world_params, env_params = calibrated_site(theta1, args.params)
         print(f"\n=== Outcome setting theta1 = {theta1} ===")
-
-        # 1. A historical cohort: the predictor learns from culture results, as a hospital would.
-        hist = sample_world(1, args.n, world_params)
-        hist_obs = observe(1, hist, world_params)
-        y, labelled = pred.culture_labels(hist, hist_obs)
-        model = pred.Logistic().fit(pred.record_table(hist, hist_obs)[labelled], y[labelled])
-
-        # 2. New patients: predict from the record only.
-        world = sample_world(2, args.n, world_params, start_id=args.n)
-        obs = observe(2, world, world_params)
-        p_fail = model.predict(pred.record_table(world, obs))
-        truth = pred.truth(world, env_params)
-        y_new, lab_new = pred.culture_labels(world, obs)
-        print(f"  Predictor: AUROC {pred.auroc(p_fail[lab_new], y_new[lab_new]):.3f} against culture results "
+        s = simulate_site(theta1, args.n, args.params)
+        world, obs, env_params, p_fail, truth = s["world"], s["obs"], s["env_params"], s["p_fail"], s["truth"]
+        print(f"  Predictor: AUROC {s['auroc_culture']:.3f} against culture results "
               f"(cultured patients only), {pred.auroc(p_fail, truth['a_fails']):.3f} against true failure of A "
               f"(all patients). Mean P(A fails) {p_fail.mean():.3f}; true rate {truth['a_fails'].mean():.3f}.")
 
