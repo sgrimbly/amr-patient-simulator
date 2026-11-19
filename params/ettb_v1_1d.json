@@ -1,0 +1,259 @@
+{
+ "version": "v1.1d",
+ "description": "Calibrated ETTB parameters for a US-like site (19 November 2026). The association layer is fitted by ABC-PMC to published ESBL risk-factor odds ratios, crude age gradients in admitted cohorts, US surveillance non-susceptibility and the external AUROC of a clinical ESBL score; the outcome layer to mortality by stratum, ICU shares, the observational odds ratio of about 1.6 for inactive empirical therapy and the MERINO trial. The harm of inactive therapy is not identified, so three outcome settings (theta1 = 0.6, 0.9, 1.2) that pass every check are given; report results across all three. Synthetic research parameters, not estimates for any real hospital.",
+ "calibrated_params": {
+  "rho_esbl": 0.010280512272956142,
+  "rho_carb": 2.723513545774734e-06,
+  "rho_fqr": 0.09790123233741142,
+  "rho_agr": 1.125354035295878e-07,
+  "p_hai": 0.3,
+  "hiv_prevalence": 0.05,
+  "breakpoints_clsi": 1.0,
+  "dm_base": -1.9,
+  "dm_age": 0.5,
+  "ckd_base": -2.6,
+  "ckd_age": 0.8,
+  "ckd_dm": 1.2,
+  "immuno_base": -2.6,
+  "hiv_peak_age": 42.0,
+  "hiv_age_sd": 16.0,
+  "hiv_shape_mean": 0.343,
+  "adm_base": -1.6,
+  "adm_age": 0.3,
+  "adm_comorb": 0.35,
+  "adm_hai": 0.9,
+  "p_adm_within_90d": 0.25,
+  "care_base": -3.2,
+  "care_age": 1.0,
+  "care_comorb": 0.3,
+  "transfer_base": -3.0,
+  "transfer_hai": 1.0,
+  "transfer_care": 1.5,
+  "cath_base": -3.0,
+  "cath_age": 0.4,
+  "cath_care": 1.2,
+  "cath_hai": 1.0,
+  "cath_male": 0.5,
+  "cath_adm": 0.4,
+  "ppi_base": -1.6,
+  "ppi_age": 0.4,
+  "ppi_comorb": 0.3,
+  "ep_base": 0.3,
+  "ep_age": 0.1,
+  "ep_comorb": 0.2,
+  "ep_adm": 0.5,
+  "ep_female": 0.3,
+  "ep_care": 0.4,
+  "ep_cath": 0.5,
+  "ep_hosp_base": -2.0,
+  "ep_hosp_adm": 1.6,
+  "mix_comm": [
+   0.25,
+   0.35,
+   0.0,
+   0.25,
+   0.0,
+   0.15
+  ],
+  "mix_hosp": [
+   0.32,
+   0.3,
+   0.14,
+   0.08,
+   0.08,
+   0.08
+  ],
+  "second_course_hosp": 0.25,
+  "ep_cult_comm": 0.25,
+  "ep_cult_hosp": 0.7,
+  "col_select": 1.20980429815229,
+  "col_courses": 0.9670037481452312,
+  "col_fq_esbl": 0.6,
+  "col_adm": 1.561742197523527,
+  "col_hai": 0.6442669229231747,
+  "col_care": 0.6,
+  "col_cath": 1.3304277131092674,
+  "col_ppi": 0.7298882773643897,
+  "col_age": -0.7843503677364076,
+  "col_age_step": 0.0,
+  "col_transfer": 1.5545061876788522,
+  "col_ckd": 0.9875542756729204,
+  "co_carb": 1.5,
+  "co_fqr": 2.0,
+  "co_agr": 1.5,
+  "comm_sd": [
+   0.9990088826226924,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "col_age_mech": [
+   0.0,
+   0.0,
+   0.5311279296875,
+   0.0
+  ],
+  "prior_reveal": 0.5994057354553756,
+  "prior_false_pos": 0.02,
+  "p_bsi_ca": 0.35,
+  "p_bsi_hai": 0.45,
+  "bsi_male": 0.6,
+  "bsi_cath": -0.5,
+  "sev_bsi": 0.5,
+  "sev_uti": -0.3,
+  "sev_comorb": 0.25,
+  "sev_age": 0.25,
+  "icu_base": -3.0,
+  "icu_sev": 1.2,
+  "icu_hai": 0.5,
+  "p_bsi_urinary_ca": 0.6,
+  "p_bsi_urinary_hai": 0.4,
+  "sev_bsi_nonurinary": 0.0,
+  "sev_hai": 0.0,
+  "sev_pa": 0.0,
+  "p_bsi_urinary_pa_logor": -1.252762968495368,
+  "p_oxa1_given_esbl": 0.3,
+  "p_oxa1_given_esbl_kp": 0.45,
+  "delta_oxa1_tzp": 1.4075345993041992,
+  "mic_tables_v11c": 1.0,
+  "p_pa_tzp": 0.10923527361661858,
+  "pa_tzp_prior_bl": 0.9707789171582248,
+  "delta_pa_tzp": 3.5,
+  "p_bact_bsi": 0.65,
+  "p_bact_uti": 0.85,
+  "org_probs": [
+   [
+    0.85,
+    0.1,
+    0.05
+   ],
+   [
+    0.62,
+    0.23,
+    0.15
+   ],
+   [
+    0.7,
+    0.22,
+    0.08
+   ],
+   [
+    0.45,
+    0.35,
+    0.2
+   ]
+  ],
+  "tau": [
+   0.793832132305119,
+   0.7,
+   0.6,
+   0.5
+  ],
+  "psi": [
+   0.014709048087876415,
+   0.002,
+   0.05,
+   0.02
+  ],
+  "psi_pa_carb": 0.1096895908473705,
+  "esbl_kp_logor": 1.0,
+  "pa_carb_prior_carb": 1.472472057360943,
+  "pa_carb_icu": 0.0,
+  "org_mech_logor": [
+   [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    2.070281505584717,
+    -1.3893580436706543,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    -1.1784625053405762,
+    1.0506224632263184
+   ]
+  ],
+  "mic_sd": 0.8,
+  "bl_shared": 0.4,
+  "mech_sd": 0.5,
+  "esbl_tzp_sd": 1.0,
+  "esbl_tzp_target_ec": 0.938,
+  "esbl_tzp_target_kp": 0.939,
+  "record_completeness": 1.0,
+  "comorb_coding": 1.0,
+  "ast_vme": 0.0,
+  "ast_me": 0.0,
+  "sev_obs_sd": 0.5
+ },
+ "outcome_family": [
+  {
+   "theta1": 0.6,
+   "world": {
+    "sev_bsi": 2.2331159597475425,
+    "sev_bsi_nonurinary": 2.594702309333817,
+    "sev_hai": 1.2864578850140165,
+    "sev_pa": 1.051165061451837,
+    "icu_base": -2.206628056326746,
+    "icu_sev": 0.14055373135640403
+   },
+   "env": {
+    "p_result_day1": 0.02,
+    "p_result_day3": 0.25,
+    "p_result_day4": 0.03,
+    "amikacin_urinary_only": 1.0,
+    "theta0": -6.125875156853406,
+    "theta1": 0.6,
+    "kappa": 0.620269775390625,
+    "tzp_oxa1_eff": 0.0
+   }
+  },
+  {
+   "theta1": 0.9,
+   "world": {
+    "sev_bsi": 1.1911638829410485,
+    "sev_bsi_nonurinary": 1.690251465632245,
+    "sev_hai": 0.9050808847902586,
+    "sev_pa": 0.6528424277539174,
+    "icu_base": -2.2170859329293267,
+    "icu_sev": 0.23260241110762994
+   },
+   "env": {
+    "p_result_day1": 0.02,
+    "p_result_day3": 0.25,
+    "p_result_day4": 0.03,
+    "amikacin_urinary_only": 1.0,
+    "theta0": -5.973471675662893,
+    "theta1": 0.9,
+    "kappa": 0.282623291015625,
+    "tzp_oxa1_eff": 0.0
+   }
+  },
+  {
+   "theta1": 1.2,
+   "world": {
+    "sev_bsi": 0.6859531871460682,
+    "sev_bsi_nonurinary": 1.2412198753831933,
+    "sev_hai": 0.7104978554272615,
+    "sev_pa": 0.43298015141248836,
+    "icu_base": -2.231271277757605,
+    "icu_sev": 0.33970561972477675
+   },
+   "env": {
+    "p_result_day1": 0.02,
+    "p_result_day3": 0.25,
+    "p_result_day4": 0.03,
+    "amikacin_urinary_only": 1.0,
+    "theta0": -5.891147936398023,
+    "theta1": 1.2,
+    "kappa": 0.147857666015625,
+    "tzp_oxa1_eff": 0.0
+   }
+  }
+ ]
+}

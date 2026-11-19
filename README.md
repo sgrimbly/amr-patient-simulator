@@ -77,9 +77,13 @@ Because the truth is known, the two stages can be scored separately. The predict
 |---|---|
 | `ettb/world.py` | Generates patients (`sample_world`), produces their records (`observe`) and converts both to a pandas table (`to_frame`) |
 | `ettb/env.py` | The daily step-up process, the built-in policies and `run_policy` |
+| `ettb/loop.py` | `run_loop`, which runs the same process one day at a time so that any Python decision model can choose each morning |
 | `ettb/params.py` | Default parameters, drug and organism lists, MIC and breakpoint tables |
+| `params/ettb_v1_1d.json` | Calibrated parameters for a synthetic US-like site, with three outcome settings |
+| `examples/` | The full loop: a predictor, decision models and scoring against the truth (see `examples/README.md`) |
 | `figures/` | The diagrams used in this README |
 | `tests/test_ettb.py` | Tests of exact replay, counterfactual invariances and the separation of truth from the record |
+| `tests/test_loop.py` | Tests that `run_loop` reproduces `run_policy` exactly, of the example decision models and of the parameter file |
 
 ## Installation
 
@@ -125,7 +129,7 @@ print(f"stepped up {np.asarray(r1['stepped']).mean():.3f}; per 1000 patients: "
       f"{1000 * (d0 & ~d1).mean():.1f} deaths averted, {1000 * (~d0 & d1).mean():.1f} caused")
 ```
 
-The built-in policies in `env.py` are a fixed day, a threshold on the predictor's output, a belief rule that combines the predictor with a filter on the vital signs, an oracle, and a rule meant to resemble historical practice. To test your own rule, compare it with these on the same `world`. `run_policy` returns per-patient arrays (`died`, `death_day`, `stepped`, `step_day`, `inactive_days`, `b_days`, `severity_path` and others). Any parameter can be overridden by passing a modified copy of `default_params()` or, for the daily process, an `env_params` dictionary.
+The built-in policies in `env.py` are a fixed day, a threshold on the predictor's output, a belief rule that combines the predictor with a filter on the vital signs, an oracle, and a rule meant to resemble historical practice. To test your own rule, write it as an object with `reset` and `act` methods and pass it to `ettb.loop.run_loop`, which gives the same outcomes as `run_policy` for the same seed and world. `examples/full_loop.py` does this end to end, from training a predictor to scoring decision rules against the truth. `run_policy` returns per-patient arrays (`died`, `death_day`, `stepped`, `step_day`, `inactive_days`, `b_days`, `severity_path` and others). Any parameter can be overridden by passing a modified copy of `default_params()` or, for the daily process, an `env_params` dictionary.
 
 ## Calibration
 
@@ -135,7 +139,7 @@ The default parameters are placeholders chosen to be plausible. They are not est
 - **Microbiology.** Set the wild-type MIC distributions and breakpoints from EUCAST and CLSI tables. The `mic_tables_v11c` switch uses tables checked against EUCAST v16.1.
 - **The links the decision acts on.** Fit the harm of an ineffective first drug to the observational odds ratio for inappropriate empirical therapy, and check the result against randomised trials and trial emulations run in silico on simulated patients.
 
-Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. Calibrated parameter sets and the calibration code are not part of this repository yet.
+Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. One calibrated parameter set (v1.1d, a synthetic US-like site) is in `params/ettb_v1_1d.json`, and `examples/full_loop.py` shows how to load it. The calibration code is not part of this repository yet.
 
 ## Extension routes
 

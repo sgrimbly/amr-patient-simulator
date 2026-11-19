@@ -125,11 +125,13 @@ def _patient(u, u_ext, u_ext2, u_ext3, p):
     # per-patient exposure z with a loading per mechanism. comm_sd = 0 reproduces v1 exactly.
     z_comm = ndtri(u_ext[_EXT_LAYOUT["comm"]])
     unrec = p["comm_sd"] * z_comm
+    # Mechanism-specific age slopes on top of the shared one (zeros reproduce earlier versions).
+    age_mech = p["col_age_mech"] * age_z
     u_col = U("col")
-    c_esbl = u_col[0] < expit(base[0] + common + select[0] + p["col_fq_esbl"] * exposed[3] + unrec[0])
+    c_esbl = u_col[0] < expit(base[0] + common + select[0] + p["col_fq_esbl"] * exposed[3] + unrec[0] + age_mech[0])
     co = jnp.array([0.0, p["co_carb"], p["co_fqr"], p["co_agr"]])
     col = jnp.concatenate([c_esbl[None], u_col[1:] < expit(base[1:] + common + select[1:] + co[1:] * c_esbl
-                                                            + unrec[1:])])
+                                                            + unrec[1:] + age_mech[1:])])
     shown = jnp.where(col, U("reveal") < p["prior_reveal"], U("fp") < p["prior_false_pos"])
     prior_r = cultured & shown
     # Syndrome, severity, ICU.

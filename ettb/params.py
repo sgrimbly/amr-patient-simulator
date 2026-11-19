@@ -54,6 +54,8 @@ def default_params() -> dict:
         # v1.1: loading of each mechanism (ESBL, CARB, FQR, AGR) on a latent exposure the record never shows
         # (community, household, travel, care elsewhere). Zero reproduces v1.
         "comm_sd": np.array([0.0, 0.0, 0.0, 0.0]),
+        # Extra age slope per mechanism (ESBL, CARB, FQR, AGR), per 17 years, added to the shared col_age.
+        "col_age_mech": np.array([0.0, 0.0, 0.0, 0.0]),
         "prior_reveal": 0.6, "prior_false_pos": 0.02,
         # --- syndrome, severity, ICU ---
         "p_bsi_ca": 0.35, "p_bsi_hai": 0.45, "bsi_male": 0.6, "bsi_cath": -0.5,
