@@ -1,0 +1,19 @@
+[project]
+name = "ettb"
+version = "1.1.0"
+description = "ETTB: a synthetic patient simulator for testing empirical antibiotic therapy decisions (research software; not clinical guidance)"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+    "jax>=0.12",
+    "numpy>=2.5",
+    "pandas>=3.0",
+    "scipy>=1.18",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=9.2"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
