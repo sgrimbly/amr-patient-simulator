@@ -1,5 +1,4 @@
 """The day-by-day loop, the example decision models and the calibrated parameter file."""
-import json
 import sys
 from pathlib import Path
 
@@ -8,13 +7,12 @@ import pytest
 
 from ettb import env as E
 from ettb.loop import run_loop
-from ettb.params import default_params
+from ettb.params import calibrated_site, default_params
 from ettb.world import observe, sample_world
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "examples"))
 import policies as pol  # noqa: E402
-from full_loop import load_site  # noqa: E402
 
 P = default_params()
 N = 20_000
@@ -96,10 +94,14 @@ def test_mechanism_age_slope_moves_only_its_mechanism():
     assert r1 > 1.3 * r0
 
 
-def test_calibrated_parameter_file_covers_every_parameter():
-    rep = json.loads((ROOT / "params/ettb_v1_1d.json").read_text())
-    assert set(rep["calibrated_params"]) == set(P)
-    assert sorted(f["theta1"] for f in rep["outcome_family"]) == [0.6, 0.9, 1.2]
-    wp, ep = load_site(ROOT / "params/ettb_v1_1d.json", 0.9)
-    assert set(ep) <= set(E.default_env_params())
+@pytest.mark.parametrize("theta1", [0.6, 0.9, 1.2])
+def test_calibrated_site_sets_every_parameter(theta1):
+    wp, ep = calibrated_site(theta1)
+    assert set(wp) == set(P)
+    assert set(ep) <= set(E.default_env_params()) and ep["theta1"] == theta1
     assert np.asarray(wp["col_age_mech"])[2] > 0
+
+
+def test_calibrated_site_rejects_an_unknown_outcome_setting():
+    with pytest.raises(ValueError):
+        calibrated_site(0.75)

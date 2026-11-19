@@ -78,8 +78,8 @@ Because the truth is known, the two stages can be scored separately. The predict
 | `ettb/world.py` | Generates patients (`sample_world`), produces their records (`observe`) and converts both to a pandas table (`to_frame`) |
 | `ettb/env.py` | The daily step-up process, the built-in policies and `run_policy` |
 | `ettb/loop.py` | `run_loop`, which runs the same process one day at a time so that any Python decision model can choose each morning |
-| `ettb/params.py` | Default parameters, drug and organism lists, MIC and breakpoint tables |
-| `params/ettb_v1_1d.json` | Calibrated parameters for a synthetic US-like site, with three outcome settings |
+| `ettb/params.py` | Default parameters, drug and organism lists, MIC and breakpoint tables, and `calibrated_site()` |
+| `ettb/calibrated_us_site.json` | Calibrated parameters for a synthetic US-like site (v1.1d), with three outcome settings |
 | `examples/` | The full loop: a predictor, decision models and scoring against the truth (see `examples/README.md`) |
 | `figures/` | The diagrams used in this README |
 | `tests/test_ettb.py` | Tests of exact replay, counterfactual invariances and the separation of truth from the record |
@@ -139,7 +139,7 @@ The default parameters are placeholders chosen to be plausible. They are not est
 - **Microbiology.** Set the wild-type MIC distributions and breakpoints from EUCAST and CLSI tables. The `mic_tables_v11c` switch uses tables checked against EUCAST v16.1.
 - **The links the decision acts on.** Fit the harm of an ineffective first drug to the observational odds ratio for inappropriate empirical therapy, and check the result against randomised trials and trial emulations run in silico on simulated patients.
 
-Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. One calibrated parameter set (v1.1d, a synthetic US-like site) is in `params/ettb_v1_1d.json`, and `examples/full_loop.py` shows how to load it. The calibration code is not part of this repository yet.
+Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. One calibrated parameter set (v1.1d, a synthetic US-like site) is in `ettb/calibrated_us_site.json`. `calibrated_site(theta1)` in `ettb/params.py` returns its world and environment parameters for one of the three outcome settings. The calibration code is not part of this repository yet.
 
 ## Extension routes
 

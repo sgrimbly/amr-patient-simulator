@@ -11,7 +11,7 @@ The default run takes about ten seconds on a laptop CPU.
 
 ## What does the script do?
 
-For each of the three outcome settings in `params/ettb_v1_1d.json` it does four things.
+For each of the three outcome settings of the calibrated US-like site (`ettb/calibrated_us_site.json`) it does four things.
 
 1. **Trains the predictor on a historical cohort.** The labels are what a hospital would have, namely the laboratory's susceptibility result for drug *A*, available only for patients with a bacterial infection.
 2. **Predicts for new patients** from their records alone.

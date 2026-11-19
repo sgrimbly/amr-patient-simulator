@@ -1,10 +1,14 @@
 """Parameters for the JAX simulator (ETTB v1). Plain dicts of floats so they are
 JAX pytrees: they can be jit-compiled, vmapped over (for calibration) and overridden.
 
-The defaults are placeholders chosen to be plausible, not calibrated estimates.
+The defaults are placeholders chosen to be plausible, not calibrated estimates. calibrated_site() loads a
+calibrated parameter set instead.
 EVIDENCE records the few values that come from published sources.
 """
 from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import numpy as np
 from scipy.special import ndtri
@@ -156,3 +160,21 @@ BP_V11C[1, 2, 1] = np.log2([16.0, 32.0])
 def esbl_tzp_shift(target_s: float, org: int, mic_sd: float, esbl_tzp_sd: float) -> float:
     """ESBL shift on log2 TZP MIC giving P(S | ESBL only) = target under EUCAST breakpoints."""
     return float(BP[0, org, 1, 0] - WT[org, 1] - ndtri(target_s) * np.hypot(mic_sd, esbl_tzp_sd))
+
+
+CALIBRATED_US_SITE = Path(__file__).with_name("calibrated_us_site.json")
+
+
+def calibrated_site(theta1: float = 0.9, path=CALIBRATED_US_SITE) -> tuple[dict, dict]:
+    """(world params, env params) for one outcome setting of a calibrated site.
+
+    The default file is the v1.1d US-like site. The harm of an ineffective first drug is not identified, so the file
+    holds three outcome settings (theta1 = 0.6, 0.9, 1.2) that pass every check; report results across all three.
+    Pass world params to sample_world and observe, and env params to run_policy or run_loop.
+    """
+    rep = json.loads(Path(path).read_text())
+    base = {k: np.array(v) if isinstance(v, list) else v for k, v in rep["calibrated_params"].items()}
+    member = next((f for f in rep["outcome_family"] if abs(f["theta1"] - theta1) < 1e-9), None)
+    if member is None:
+        raise ValueError(f"theta1 must be one of {[f['theta1'] for f in rep['outcome_family']]}, got {theta1}")
+    return dict(base, **member["world"]), dict(member["env"])

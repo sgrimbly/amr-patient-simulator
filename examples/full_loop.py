@@ -3,7 +3,7 @@
     .venv/bin/python -I examples/full_loop.py            # all three outcome settings, 50,000 patients each
     .venv/bin/python -I examples/full_loop.py --n 10000 --theta1 0.9
 
-Steps, for each outcome setting of the calibrated v1.1d site:
+Steps, for each outcome setting of the calibrated US-like site (ettb/calibrated_us_site.json):
   1. Simulate a historical cohort and train the predictor on its culture results.
   2. Simulate a new cohort and predict P(drug A fails) from each patient's record.
   3. Run each decision model on the same patients, with the same noise, so differences are counterfactual.
@@ -12,7 +12,6 @@ Steps, for each outcome setting of the calibrated v1.1d site:
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
 
@@ -24,16 +23,8 @@ import numpy as np  # noqa: E402
 import policies as pol  # noqa: E402
 import predictors as pred  # noqa: E402
 from ettb.loop import run_loop  # noqa: E402
-from ettb.params import DRUGS  # noqa: E402
+from ettb.params import CALIBRATED_US_SITE, DRUGS, calibrated_site  # noqa: E402
 from ettb.world import observe, sample_world  # noqa: E402
-
-
-def load_site(path, theta1):
-    """World and environment parameters for one outcome setting of a calibrated site."""
-    rep = json.loads(Path(path).read_text())
-    base = {k: np.array(v) if isinstance(v, list) else v for k, v in rep["calibrated_params"].items()}
-    member = next(f for f in rep["outcome_family"] if abs(f["theta1"] - theta1) < 1e-9)
-    return dict(base, **member["world"]), dict(member["env"])
 
 
 def summarise(name, r, never, n):
@@ -71,11 +62,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=50_000)
     ap.add_argument("--theta1", type=float, nargs="*", default=[0.6, 0.9, 1.2])
-    ap.add_argument("--params", default=str(ROOT / "params/ettb_v1_1d.json"))
+    ap.add_argument("--params", default=str(CALIBRATED_US_SITE))
     args = ap.parse_args()
 
     for theta1 in args.theta1:
-        world_params, env_params = load_site(args.params, theta1)
+        world_params, env_params = calibrated_site(theta1, args.params)
         print(f"\n=== Outcome setting theta1 = {theta1} ===")
 
         # 1. A historical cohort: the predictor learns from culture results, as a hospital would.
