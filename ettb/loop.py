@@ -72,7 +72,10 @@ def _day(state, t, go, u_t, x, e, result_day):
 
 def run_loop(seed: int, world: dict, model, env_params: dict | None = None, obs=None, directed=None) -> dict:
     """Simulate every patient with `model` deciding each morning. Returns the arrays `run_policy` returns, as numpy,
-    plus the daily `vitals` (NaN when not seen), `step_up` requests and drug activity `alpha`, each (patients, H)."""
+    plus the daily `vitals` (NaN when not seen), `step_up` requests and drug activity `alpha`, each (patients, H), and
+    `p_death`: each patient's probability of dying by day 30 given their severity path. Averaging p_death instead of
+    `died` removes the noise of the death draws; it is exact when the decisions do not depend on survival (any rule
+    that decides on day 0), and very close otherwise."""
     e = {k: jnp.asarray(v, jnp.float32) for k, v in {**E.default_env_params(), **(env_params or {})}.items()}
     x = E._arrays(world, obs, e, directed)
     n = x["pid"].shape[0]
@@ -103,7 +106,9 @@ def run_loop(seed: int, world: dict, model, env_params: dict | None = None, obs=
     S, alive, stepped, step_day, det, b_days, inactive_days = (np.asarray(s) for s in state)
     bact, a_A = np.asarray(x["bact"]), np.asarray(x["a_A"])
     died = ~alive
-    return dict(died=died, death_day=np.where(died, dies_all.argmax(1), -1), deteriorated=det, step_day=step_day,
+    hazard = 1 / (1 + np.exp(-(float(e["theta0"]) + float(e["theta1"]) * s_path.astype(np.float64))))
+    p_death = 1 - np.prod(1 - hazard, axis=1)
+    return dict(died=died, p_death=p_death, death_day=np.where(died, dies_all.argmax(1), -1), deteriorated=det, step_day=step_day,
                 stepped=stepped, b_days=b_days, inactive_days=inactive_days,
                 unnecessary_b=stepped & (~bact | (a_A > 0.5)),
                 time_to_active=np.where(bact, (alpha > 0.5).argmax(1), 0), result_day=rd, severity_path=s_path,

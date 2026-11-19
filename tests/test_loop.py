@@ -105,3 +105,20 @@ def test_calibrated_site_sets_every_parameter(theta1):
 def test_calibrated_site_rejects_an_unknown_outcome_setting():
     with pytest.raises(ValueError):
         calibrated_site(0.75)
+
+
+def test_expected_deaths_match_realised_deaths(cohort):
+    w, o = cohort
+    for model in (_Fixed(99), _Fixed(0)):
+        r = run_loop(9, w, model, obs=o)
+        se = np.sqrt(r["died"].mean() * (1 - r["died"].mean()) / N)
+        assert abs(r["p_death"].mean() - r["died"].mean()) < 4 * se
+        assert ((r["p_death"] >= 0) & (r["p_death"] <= 1)).all()
+
+
+def test_expected_deaths_are_unchanged_where_treatment_does_not_matter(cohort):
+    w, o = cohort
+    never, always = run_loop(9, w, _Fixed(99), obs=o), run_loop(9, w, _Fixed(0), obs=o)
+    x = {k: np.asarray(v) for k, v in E._arrays(w).items()}
+    same = (x["a_A"] == x["a_B"]) | ~x["bact"]
+    np.testing.assert_allclose(never["p_death"][same], always["p_death"][same], rtol=1e-6)
