@@ -163,6 +163,7 @@ def esbl_tzp_shift(target_s: float, org: int, mic_sd: float, esbl_tzp_sd: float)
 
 
 CALIBRATED_US_SITE = Path(__file__).with_name("calibrated_us_site.json")
+SA_ANCHOR_SITE = Path(__file__).with_name("sa_anchor_site.json")
 
 
 def calibrated_site(theta1: float = 0.9, path=CALIBRATED_US_SITE) -> tuple[dict, dict]:
@@ -178,3 +179,16 @@ def calibrated_site(theta1: float = 0.9, path=CALIBRATED_US_SITE) -> tuple[dict,
     if member is None:
         raise ValueError(f"theta1 must be one of {[f['theta1'] for f in rep['outcome_family']]}, got {theta1}")
     return dict(base, **member["world"]), dict(member["env"])
+
+
+def sa_anchor_site(turnaround: float | None = None, path=SA_ANCHOR_SITE) -> tuple[dict, dict]:
+    """(world params, env params) for the South African anchor site: a public tertiary hospital fitted to the
+    Tygerberg bloodstream-infection cohort, with outcome setting theta1 = 0.9 and a 3.1-day culture turnaround.
+    Pass turnaround (mean days to the culture result, e.g. 7.0) for a longer-turnaround scenario. See the
+    description field of ettb/sa_anchor_site.json for what was fitted and checked."""
+    rep = json.loads(Path(path).read_text())
+    world = {k: np.array(v) if isinstance(v, list) else v for k, v in rep["world"].items()}
+    env = dict(rep["env"])
+    if turnaround is not None:
+        env["result_mean"] = float(turnaround)
+    return world, env

@@ -136,3 +136,13 @@ def test_long_turnaround_option(cohort):
     assert (a["step_day"] == 5).sum() > 0                  # stepping up on day 5 is now possible
     long0, short0 = run_loop(9, w, _Fixed(0), env_params=ep, obs=o), run_loop(9, w, _Fixed(0), obs=o)
     assert long0["b_days"].mean() > 2 * short0["b_days"].mean()           # longer on B before the result
+
+
+def test_sa_anchor_site_loads_and_takes_a_turnaround():
+    from ettb.params import sa_anchor_site
+    w3, e3 = sa_anchor_site()
+    w7, e7 = sa_anchor_site(turnaround=7.0)
+    assert e3["result_mean"] == pytest.approx(3.1) and e7["result_mean"] == 7.0
+    assert e3["theta1"] == pytest.approx(0.9)
+    world = sample_world(1, 2000, w7)
+    assert 0.4 < float(np.asarray(world["onset_hai"]).mean()) < 0.65     # Tygerberg: 57% hospital-acquired
