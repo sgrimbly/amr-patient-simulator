@@ -266,7 +266,7 @@ def observe(seed: int, world: dict, params: dict) -> dict:
 
 
 def to_frame(world: dict, obs: dict | None = None):
-    """pandas view with the column names used by the realism audit and predictor adapters."""
+    """pandas view of the world (and, if given, the record) with one column per variable."""
     import pandas as pd
 
     from .params import ABX_CLASSES, DRUGS, MECHANISMS, ORGANISMS, SIR

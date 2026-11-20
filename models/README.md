@@ -103,7 +103,7 @@ Full-feature models (pooled test split, mean over the 13 cells): XGBoost AUROC 0
   culture are not in the training data.
 - On simulated patients the shared-feature models reach an AUROC of about 0.66 against culture results and 0.62
   against true failure of drug *A*, below their AUROC on ARMD. The simulator's records differ from real ones in
-  age, sex and history depth; that gap is under work. Models that do not know the site also predict too little
+  age, sex and history depth (see `docs/VALIDATION.md`). Models that do not know the site also predict too little
   resistance for simulated patients, which a local intercept correction fixes.
 
 ## Comparison with ARMD-Predict

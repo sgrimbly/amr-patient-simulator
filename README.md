@@ -108,6 +108,7 @@ Because the truth is known, the two stages can be scored separately. The predict
 | `examples/armd_models.py` | Downloads and loads the ARMD-trained predictors, and maps simulated records to their features |
 | `models/` | Model card, manifest, test statistics and release pointer for the ARMD-trained predictors (weights in the release) |
 | `docs/ASSUMPTIONS.md` | What the simulator assumes, how well each assumption is supported, and the parameter that changes it |
+| `docs/VALIDATION.md` | How the calibrated sites compare with published data: fitted and held-out checks, with failures |
 | `figures/` | The diagrams used in this README |
 | `tests/` | Exact replay and counterfactual invariances (`test_ettb.py`), `run_loop` against `run_policy` (`test_loop.py`), decision rules, and the model loader (`test_armd_models.py`) |
 
@@ -167,14 +168,14 @@ The default parameters are placeholders chosen to be plausible. They are not est
 - **Microbiology.** Set the wild-type MIC distributions and breakpoints from EUCAST and CLSI tables. The `mic_tables_v11c` switch uses tables checked against EUCAST v16.1.
 - **The links the decision acts on.** Fit the harm of an ineffective first drug to the observational odds ratio for inappropriate empirical therapy, and check the result against randomised trials and trial emulations run in silico on simulated patients.
 
-Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. One calibrated parameter set (v1.1d, a synthetic US-like site) is in `ettb/calibrated_us_site.json`. A South African anchor site, a public tertiary hospital fitted to a Cape Town bloodstream-infection cohort (3.1-day culture turnaround, outcome setting theta1 = 0.9), is in `ettb/sa_anchor_site.json`: `world_params, env_params = sa_anchor_site(turnaround=7.0)` in `ettb/params.py` gives the 7-day scenario. `calibrated_site(theta1)` in `ettb/params.py` returns its world and environment parameters for one of the three outcome settings. The calibration code is not part of this repository yet.
+Only the links the decision intervenes on need to be causally right: drug activity, the harm of an ineffective drug, the death hazard and laboratory turnaround. Everything upstream only has to reproduce observed associations. Two calibrated sites ship with the package. A synthetic US-like site (v1.1d) is in `ettb/calibrated_us_site.json`; `calibrated_site(theta1)` in `ettb/params.py` returns its world and environment parameters for one of the three outcome settings. A South African anchor site, a public tertiary hospital fitted to a Cape Town bloodstream-infection cohort (3.1-day culture turnaround, outcome setting theta1 = 0.9), is in `ettb/sa_anchor_site.json`; `sa_anchor_site(turnaround=7.0)` gives the same site with a 7-day turnaround. How both compare with published data is in `docs/VALIDATION.md`. The calibration code is not part of this repository yet.
 
 ## Extension routes
 
 These are directions under consideration, not features.
 
 - **A ward layer.** At present patients are independent, so the simulator cannot say what one patient's carbapenem course does to later patients. A ward layer would hold beds, carriage, transmission and selection, so that the same ward can be run under two prescribing policies with the same arrivals and the extra resistant carriage and infections among other patients counted.
-- **South African transport.** Calibrate a site profile to South African surveillance and hospital cohorts, then test how predictors trained at a US-like site transport.
+- **South African variation.** One South African site is included. South African hospitals differ widely in resistance, case mix and laboratory turnaround, so the next step is a population of plausible South African sites and tests of how predictors and decision rules hold up across it.
 - **Open-dataset comparison.** Predictors trained on ARMD are now released (`models/`). On simulated patients they are less accurate than on real ones, because the simulated records differ from ARMD in age, sex and history depth; recalibrating the record layer to ARMD is the next step.
 - **ESBL predictability.** With a linear age effect, ceftriaxone resistance is more predictable in the simulator than in published hospital models. The `col_age_step` switch replaces the linear age term with a step at 70.
 

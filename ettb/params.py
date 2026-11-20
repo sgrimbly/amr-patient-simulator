@@ -99,7 +99,7 @@ def default_params() -> dict:
 EVIDENCE = {
     "esbl_tzp_target_ec/kp": "SAASP 2026 p.68 (GSH 2015), literature-associational",
     "carriage and contact log-ORs": "placeholders; calibrated sets fit them to published ESBL risk-factor adjusted ORs",
-    "breakpoints": "v1 tables unverified; the v1.1c tables (mic_tables_v11c) were checked against EUCAST v16.1 and CLSI",
+    "breakpoints": "the original v1 tables are not verified; the v1.1c tables (mic_tables_v11c) were checked against EUCAST v16.1 and CLSI",
     "everything else": "toy placeholder",
 }
 
@@ -118,7 +118,8 @@ for o in (0, 1):
 DELTA[2, 1, 3], DELTA[2, 2, 5], DELTA[2, 3, 4] = 3.5, 4, 4
 COMPAT = np.array([[1, 1, 1, 1], [1, 1, 1, 1], [0, 1, 1, 1]], dtype=bool)
 BETA_LACTAM = np.array([1, 1, 1, 1, 0, 0], dtype=bool)
-# Breakpoints (log2 mg/L): [system(EUCAST, CLSI), organism, drug, (S<=, R>)]. UNVERIFIED.
+# Breakpoints (log2 mg/L): [system(EUCAST, CLSI), organism, drug, (S<=, R>)]. Original v1 values, not
+# verified; set mic_tables_v11c to 1 for the verified tables.
 _BP = {
     "EUCAST": {"ent": [(1, 2), (8, 8), (0.5, 0.5), (2, 8), (8, 8), (0.25, 0.5)],
                "pa": [(1, 1), (0.001, 16), (1, 1), (2, 8), (16, 16), (0.001, 0.5)]},

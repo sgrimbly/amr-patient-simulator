@@ -1,7 +1,8 @@
 # Assumption register
 
 What the simulator assumes, why, how well each assumption is supported, and how to change it. It covers v1.1d,
-the calibrated default in `ettb/calibrated_us_site.json`. Keep it current: a change to the model changes this file.
+the structure behind both calibrated sites (`ettb/calibrated_us_site.json` and `ettb/sa_anchor_site.json`). Changes
+to the model should update this file.
 
 **Type.** *Causal* links are the ones a treatment decision acts on; they must be right for the decision to be
 right. *Association* layers only have to reproduce observed data; their internal mechanism can be wrong without
@@ -58,7 +59,7 @@ biasing decisions, as long as the record they produce is realistic. *Scope* entr
 
 ## Known misfits
 
-Listed in the validation reports, which the code regenerates. Main ones for v1.1d: the prior ESBL isolate odds
-ratio (10 against 26.8); several resistance prevalences; the Mezzadri trial emulation (risk difference -0.02
-against -0.074); and ARMD-trained models score about 0.06 AUROC lower on simulated patients than on real ones, a
-gap the v1.2 record layer did not close.
+All checks, passes and failures, are in [VALIDATION.md](VALIDATION.md). The main misfits: the prior ESBL isolate
+odds ratio (10 against 26.8); several resistance prevalences; the Mezzadri trial emulation (risk difference -0.02
+against -0.074); models trained on real records score about 0.06 AUROC lower on simulated patients; and, at the
+South African site, carbapenem-resistant infections are more lethal than surveillance reports.
