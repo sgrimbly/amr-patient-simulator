@@ -122,3 +122,17 @@ def test_expected_deaths_are_unchanged_where_treatment_does_not_matter(cohort):
     x = {k: np.asarray(v) for k, v in E._arrays(w).items()}
     same = (x["a_A"] == x["a_B"]) | ~x["bact"]
     np.testing.assert_allclose(never["p_death"][same], always["p_death"][same], rtol=1e-6)
+
+
+def test_long_turnaround_option(cohort):
+    w, o = cohort
+    ep = {"result_mean": 7.0}
+    a = run_loop(9, w, _Fixed(5), env_params=ep, obs=o)
+    b = _np(E.run_policy(9, w, E.default_policy(E.FIXED, 5), env_params=ep, obs=o))
+    for k in b:
+        np.testing.assert_array_equal(a[k], b[k], err_msg=k)
+    rd = a["result_day"]
+    assert 6.0 < rd.mean() < 8.0 and rd.min() >= 1 and rd.max() <= 14
+    assert (a["step_day"] == 5).sum() > 0                  # stepping up on day 5 is now possible
+    long0, short0 = run_loop(9, w, _Fixed(0), env_params=ep, obs=o), run_loop(9, w, _Fixed(0), obs=o)
+    assert long0["b_days"].mean() > 2 * short0["b_days"].mean()           # longer on B before the result

@@ -81,8 +81,7 @@ def run_loop(seed: int, world: dict, model, env_params: dict | None = None, obs=
     n = x["pid"].shape[0]
     u = _noise(seed, x["pid"])
     ur = u[:, 0, 4]
-    p1, p3, p4 = e["p_result_day1"], e["p_result_day3"], e["p_result_day4"]
-    result_day = jnp.where(ur < p1, 1, jnp.where(ur < p1 + p3, 3, jnp.where(ur < p1 + p3 + p4, 4, 2)))
+    result_day = E.result_days(ur, e)
     state = (jnp.asarray(x["S0"], jnp.float32), jnp.ones(n, bool), jnp.zeros(n, bool), jnp.full(n, -1),
              jnp.zeros(n, bool), jnp.zeros(n, jnp.float32), jnp.zeros(n, jnp.float32))
     model.reset({"presenting_severity": np.asarray(x["sev_obs"])})

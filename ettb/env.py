@@ -41,6 +41,10 @@ def default_env_params() -> dict:
             "p_result_day3": 0.5,
             # v1.1c: probabilities of the result on day 1 and day 4 (0 reproduces the day-2/day-3 rule).
             "p_result_day1": 0.0, "p_result_day4": 0.0,
+            # Longer turnaround (e.g. a South African public-sector laboratory): when result_mean > 0 the result day
+            # is lognormal with this mean (days) and log-scale sd result_sd_log, rounded and kept within
+            # [1, result_max]. result_mean = 0 keeps the day 1-4 rule above.
+            "result_mean": 0.0, "result_sd_log": 0.35, "result_max": 14.0,
             # Structural alternative for drug activity (link 14). 0 = binary (S or I is fully active, v1).
             # 1 = graded: activity = expit(pta_slope * (S breakpoint + pta_mid - log2 MIC)), a probability of
             # PK/PD target attainment that falls as the MIC approaches and passes the breakpoint.
@@ -61,6 +65,17 @@ def default_policy(kind: int = FIXED, tau: int = 99, c: float = 0.5, belief: dic
     b = belief or {"phi": 0.2, "s0": 0.0, "kappa": 0.6, "lam": 0.3, "sigma": 0.5, "sigma_v": 0.7,
                    "mu0": 0.2, "var0": 1.3, "sev_obs_sd": 0.5}
     return {"kind": kind, "tau": tau, "c": c, **{f"b_{k}": v for k, v in b.items()}}
+
+
+def result_days(ur, e):
+    """Day the culture result arrives, from one uniform per patient: the day 1-4 rule, or a lognormal turnaround
+    with mean result_mean when that is positive."""
+    p1, p3, p4 = e["p_result_day1"], e["p_result_day3"], e["p_result_day4"]
+    short = jnp.where(ur < p1, 1, jnp.where(ur < p1 + p3, 3, jnp.where(ur < p1 + p3 + p4, 4, 2)))
+    s = e["result_sd_log"]
+    mu = jnp.log(jnp.maximum(e["result_mean"], 1e-3)) - 0.5 * s ** 2
+    long = jnp.clip(jnp.round(jnp.exp(mu + s * ndtri(ur))), 1, e["result_max"]).astype(short.dtype)
+    return jnp.where(e["result_mean"] > 0, long, short)
 
 
 def _arrays(world, obs=None, e=None, directed=None):
@@ -104,8 +119,7 @@ def _episode(u, x, prior, e, pol):
     eps = ndtri(u[:, 0])
     xi = ndtri(u[:, 1])
     ur = u[0, 4]
-    p1, p3, p4 = e["p_result_day1"], e["p_result_day3"], e["p_result_day4"]
-    result_day = jnp.where(ur < p1, 1, jnp.where(ur < p1 + p3, 3, jnp.where(ur < p1 + p3 + p4, 4, 2)))
+    result_day = result_days(ur, e)
     bact = x["bact"]
     kind = pol["kind"]
     # Belief filter initial state from the observed presenting severity.
