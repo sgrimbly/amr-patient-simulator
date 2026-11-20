@@ -29,7 +29,7 @@ The step-up task is a partially observed Markov decision process.
 
 - Everyone starts drug *A*: ceftriaxone, or piperacillin–tazobactam if the infection began in hospital.
 - Each day before the culture result, the rule may switch once to drug *B* (ertapenem, or meropenem when there is a *Pseudomonas* risk). A step-up cannot be undone before the result.
-- The result arrives on day 2 or 3 by default, and the probabilities of day 1 to day 4 can be set. After the result, therapy is directed and the decisions end.
+- The result arrives on day 2 or 3 by default, and the probabilities of day 1 to day 4 can be set. For a laboratory with a longer turnaround, set `result_mean` (for example 7 days) to draw the result day from a lognormal with that mean, capped at `result_max`. After the result, therapy is directed and the decisions end.
 
 ![One day of the decision process](figures/one_day.png)
 
@@ -129,7 +129,7 @@ print(f"stepped up {np.asarray(r1['stepped']).mean():.3f}; per 1000 patients: "
       f"{1000 * (d0 & ~d1).mean():.1f} deaths averted, {1000 * (~d0 & d1).mean():.1f} caused")
 ```
 
-The built-in policies in `env.py` are a fixed day, a threshold on the predictor's output, a belief rule that combines the predictor with a filter on the vital signs, an oracle, and a rule meant to resemble historical practice. To test your own rule, write it as an object with `reset` and `act` methods and pass it to `ettb.loop.run_loop`, which gives the same outcomes as `run_policy` for the same seed and world. `examples/full_loop.py` does this end to end, from training a predictor to scoring decision rules against the truth. `run_policy` returns per-patient arrays (`died`, `death_day`, `stepped`, `step_day`, `inactive_days`, `b_days`, `severity_path` and others). Any parameter can be overridden by passing a modified copy of `default_params()` or, for the daily process, an `env_params` dictionary.
+The built-in policies in `env.py` are a fixed day, a threshold on the predictor's output, a belief rule that combines the predictor with a filter on the vital signs, an oracle, and a rule meant to resemble historical practice. To test your own rule, write it as an object with `reset` and `act` methods and pass it to `ettb.loop.run_loop`, which gives the same outcomes as `run_policy` for the same seed and world. `examples/full_loop.py` does this end to end, from training a predictor to scoring decision rules against the truth. `run_policy` returns per-patient arrays (`died`, `death_day`, `stepped`, `step_day`, `inactive_days`, `b_days`, `severity_path` and others). `run_loop` also returns `p_death`, each patient's probability of dying given their severity path; averaging it instead of `died` removes the noise of the death draws. Any parameter can be overridden by passing a modified copy of `default_params()` or, for the daily process, an `env_params` dictionary.
 
 ## Calibration
 
