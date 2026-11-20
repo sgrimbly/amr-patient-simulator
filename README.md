@@ -8,6 +8,27 @@ The first decision it supports is the one made before culture results arrive. Ev
 
 The simulator is written in JAX, so whole cohorts are generated and run in parallel on a laptop CPU.
 
+## What is here, and where to start
+
+The repository has three parts. Only the first is needed to use the simulator; the others are optional and each
+has its own README.
+
+| Part | What it is | Start with | Extra requirements |
+|---|---|---|---|
+| The simulator (`ettb/`) | Patients, their records, the daily step-up process and outcomes | [A minimal example](#a-minimal-example) | none |
+| The full loop (`examples/`) | A predictor, decision models and published decision rules, scored against the truth | [`examples/README.md`](examples/README.md) | matplotlib, for the figures only |
+| Predictors trained on real records (`models/`) | Susceptibility models trained on ARMD (three US hospital systems), with test statistics and 95% intervals; the weights are in a GitHub release | [`models/README.md`](models/README.md) | xgboost, for the tree models only |
+
+| I want to | Use |
+|---|---|
+| Generate a synthetic cohort and its records | `sample_world` and `observe` in `ettb/world.py` |
+| Compare built-in step-up rules on the same patients | `run_policy` in `ettb/env.py` |
+| Test my own decision model, day by day | `run_loop` in `ettb/loop.py`; template `MyPolicy` in `examples/policies.py` |
+| Test my own predictor | `fit` and `predict` on the table from `examples/predictors.py`; then `examples/full_loop.py` |
+| Use a predictor trained on real data instead of simulated data | `examples/full_loop.py --armd mlp_ensemble`, or `examples/armd_models.py` |
+| Place published decision rules on the deaths-against-days-on-*B* trade-off | `examples/decision_frontier.py` |
+| Change the site (resistance, case mix, laboratory turnaround) | `default_params()` or `calibrated_site()` in `ettb/params.py`, and `env_params` |
+
 ## How a patient is generated
 
 Each patient is generated in causal order.
@@ -80,10 +101,14 @@ Because the truth is known, the two stages can be scored separately. The predict
 | `ettb/loop.py` | `run_loop`, which runs the same process one day at a time so that any Python decision model can choose each morning |
 | `ettb/params.py` | Default parameters, drug and organism lists, MIC and breakpoint tables, and `calibrated_site()` |
 | `ettb/calibrated_us_site.json` | Calibrated parameters for a synthetic US-like site (v1.1d), with three outcome settings |
-| `examples/` | The full loop: a predictor, decision models and scoring against the truth (see `examples/README.md`) |
+| `examples/full_loop.py` | Simulator, predictor and decision models end to end, scored against the truth |
+| `examples/predictors.py` | The record table, culture labels, the hidden truth for scoring, and two simple predictors |
+| `examples/policies.py` | Reference decision models (never, always *B*, threshold, belief, oracle) and the `MyPolicy` template |
+| `examples/decision_rules.py`, `examples/decision_frontier.py` | Four published decision rules and their place on the trade-off |
+| `examples/armd_models.py` | Downloads and loads the ARMD-trained predictors, and maps simulated records to their features |
+| `models/` | Model card, manifest, test statistics and release pointer for the ARMD-trained predictors (weights in the release) |
 | `figures/` | The diagrams used in this README |
-| `tests/test_ettb.py` | Tests of exact replay, counterfactual invariances and the separation of truth from the record |
-| `tests/test_loop.py` | Tests that `run_loop` reproduces `run_policy` exactly, of the example decision models and of the parameter file |
+| `tests/` | Exact replay and counterfactual invariances (`test_ettb.py`), `run_loop` against `run_policy` (`test_loop.py`), decision rules, and the model loader (`test_armd_models.py`) |
 
 ## Installation
 
@@ -94,6 +119,8 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.lock.txt
 .venv/bin/python -I -m pytest -q
 ```
+
+The optional parts need two packages the simulator does not: `matplotlib` for the example figures and `xgboost` for the tree-based ARMD models. Install them only if you use those parts.
 
 The package is not installed into the environment. Run your code from the repository root, or add the repository root to `PYTHONPATH`, and `import ettb`.
 
@@ -147,7 +174,7 @@ These are directions under consideration, not features.
 
 - **A ward layer.** At present patients are independent, so the simulator cannot say what one patient's carbapenem course does to later patients. A ward layer would hold beds, carriage, transmission and selection, so that the same ward can be run under two prescribing policies with the same arrivals and the extra resistant carriage and infections among other patients counted.
 - **South African transport.** Calibrate a site profile to South African surveillance and hospital cohorts, then test how predictors trained at a US-like site transport.
-- **Open-dataset comparison.** Compare simulated records with large open patient-level datasets (ARMD, MIMIC-IV) wherever they record the same quantities.
+- **Open-dataset comparison.** Predictors trained on ARMD are now released (`models/`). On simulated patients they are less accurate than on real ones, because the simulated records differ from ARMD in age, sex and history depth; recalibrating the record layer to ARMD is the next step.
 - **ESBL predictability.** With a linear age effect, ceftriaxone resistance is more predictable in the simulator than in published hospital models. The `col_age_step` switch replaces the linear age term with a step at 70.
 
 ## Licence

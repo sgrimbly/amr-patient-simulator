@@ -1,0 +1,7 @@
+{
+ "name": "armd-models-v0.9",
+ "tag": "models-v0.9",
+ "asset": "armd-models-v0.9.tar.gz",
+ "url": "https://github.com/sgrimbly/amr-patient-simulator/releases/download/models-v0.9/armd-models-v0.9.tar.gz",
+ "sha256": "5f2fcc24be2599cbe143e87c302b21da2ba8990cc95d99d25512372dbb97d9e5"
+}

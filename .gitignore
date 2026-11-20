@@ -20,3 +20,7 @@ private/
 
 # Example outputs
 examples/output/
+
+# ARMD model release, downloaded by examples/armd_models.py fetch()
+models/armd-models-v*/
+models/*.tar.gz

@@ -1,0 +1,6970 @@
+{
+ "name": "armd-models-v0.9",
+ "status": "interim: XGBoost final; logistic, MLP ensemble and Bayesian models from an earlier run on an earlier version of the feature tables, evaluated on the current tables; superseded by armd-models-v1",
+ "target": "P(susceptible) of the first isolate in a culture order to the named drug",
+ "training_data": "ARMD, three public sites (stanford, ecuh, utsw); patient-grouped 60/20/20 split; metrics are on the pooled test split",
+ "statistics": "Each exported model (the files in the release, not the training objects) is run on the pooled test split of its\ncell. Point estimates are on the whole test split; 95% intervals are percentile intervals from a bootstrap that\nresamples patients (a patient's culture orders stay together). All models in a cell share the same resamples, so\ndifferences between models are paired.\n\nStatistics (positive class: susceptible, as in ARMD-Predict):\n  auroc, auprc, spec90 (specificity at 90% sensitivity), brier, ece (10 equal-width bins),\n  cal_slope and cal_intercept (logistic recalibration y ~ a + b logit(p); ideal 1 and 0),\n  oe_ratio (observed / expected susceptible), auroc_vs_xgboost_shared (paired difference).\nPer site: AUROC with its interval. For models with draws: mean sd of the draws and mean width of the 90% interval.",
+ "strategy": "pooled",
+ "xgboost_version": "3.4.1",
+ "xgboost_params": {
+  "objective": "binary:logistic",
+  "max_depth": 6,
+  "eta": 0.05,
+  "subsample": 0.8,
+  "colsample_bytree": 0.8,
+  "eval_metric": "logloss",
+  "tree_method": "hist",
+  "rounds": 500,
+  "early_stopping": 50
+ },
+ "shared_columns": [
+  "age_band_1",
+  "age_band_2",
+  "age_band_3",
+  "age_band_4",
+  "age_band_5",
+  "age_band_6",
+  "age_band_7",
+  "age_band_8",
+  "female",
+  "care_icu",
+  "care_ward",
+  "prior_r_any",
+  "prior_r_count",
+  "prior_r_same",
+  "prior_positive_culture",
+  "prior_abx_cephalosporin",
+  "prior_abx_bl_bli",
+  "prior_abx_carbapenem",
+  "prior_abx_fluoroquinolone",
+  "prior_abx_aminoglycoside",
+  "prior_abx_any",
+  "prior_abx_within_90d",
+  "prior_abx_courses_90d",
+  "procedure_urinary_catheter",
+  "nursing_home",
+  "comorb_diabetes_obs",
+  "comorb_ckd_obs",
+  "comorb_hiv_obs",
+  "comorb_immunosuppressed",
+  "comorb_count"
+ ],
+ "models": [
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ceftriaxone",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_ceftriaxone.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.743929994709243,
+    "auprc": 0.9539650320658628,
+    "ece": 0.0058015314147402,
+    "susc_pct": 89.77826069459536,
+    "n_train": 73153,
+    "n_test": 24849
+   },
+   "test": {
+    "n_test": 24849,
+    "n_patients": 16321,
+    "susceptible_pct": 89.77826069459536,
+    "point": {
+     "auroc": 0.731536211330973,
+     "auprc": 0.9497885868833611,
+     "spec90": 0.421259842519685,
+     "brier": 0.08160077642398664,
+     "ece": 0.004588989287349769,
+     "cal_slope": 1.0277760499008586,
+     "cal_intercept": -0.09640864940225495,
+     "oe_ratio": 0.9962973406999327
+    },
+    "ci95": {
+     "auroc": [
+      0.7171541337024308,
+      0.7436237709300045
+     ],
+     "auprc": [
+      0.946263723004442,
+      0.9536722216379041
+     ],
+     "spec90": [
+      0.39304305311138826,
+      0.44664650555588953
+     ],
+     "brier": [
+      0.07829128276929175,
+      0.08509318924648812
+     ],
+     "ece": [
+      0.0030129632996951914,
+      0.009125783490787048
+     ],
+     "cal_slope": [
+      0.971606588132898,
+      1.0796873320958507
+     ],
+     "cal_intercept": [
+      -0.2306502595702296,
+      0.04433186109705911
+     ],
+     "oe_ratio": [
+      0.991370062062593,
+      1.0009662830844617
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 13996,
+      "auroc": 0.7538175410945842,
+      "auroc_ci95": [
+       0.7354333631994905,
+       0.7724044330114779
+      ]
+     },
+     "stanford": {
+      "n_test": 5961,
+      "auroc": 0.704091325278729,
+      "auroc_ci95": [
+       0.6810569481615144,
+       0.7268054748285495
+      ]
+     },
+     "utsw": {
+      "n_test": 4892,
+      "auroc": 0.719346672134322,
+      "auroc_ci95": [
+       0.6869518854151324,
+       0.7529039293437049
+      ]
+     }
+    }
+   },
+   "sha256": "ffb613b63323a222e09b02178069ec6d2be072de4a80e8a10d70c85f2107d299"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ceftriaxone",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 2.010653006312424e-07,
+   "metrics": {
+    "auroc": 0.7430158832122765,
+    "auprc": 0.9523266221857938,
+    "ece": 0.0051308813244184,
+    "susc_pct": 89.77826069459536,
+    "n_train": 73153,
+    "n_test": 24849
+   },
+   "test": {
+    "n_test": 24849,
+    "n_patients": 16321,
+    "susceptible_pct": 89.77826069459536,
+    "point": {
+     "auroc": 0.7254261018204228,
+     "auprc": 0.9480145032434687,
+     "spec90": 0.41929133858267714,
+     "brier": 0.08225939072827992,
+     "ece": 0.017113032963061933,
+     "cal_slope": 1.0353557939449984,
+     "cal_intercept": 0.13007275434080254,
+     "oe_ratio": 1.0192195248282905
+    },
+    "ci95": {
+     "auroc": [
+      0.7104781393309315,
+      0.738239325486734
+     ],
+     "auprc": [
+      0.9444829339920213,
+      0.9518395189276647
+     ],
+     "spec90": [
+      0.39041240927128756,
+      0.4442767457860337
+     ],
+     "brier": [
+      0.07910437092763478,
+      0.08561353159204613
+     ],
+     "ece": [
+      0.013871927303201479,
+      0.021413429552870934
+     ],
+     "cal_slope": [
+      0.9741509931806469,
+      1.0935184698861529
+     ],
+     "cal_intercept": [
+      -0.0018022252843396236,
+      0.265387284063794
+     ],
+     "oe_ratio": [
+      1.0143052708062,
+      1.024027504231713
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.006110109510550243,
+     "ci95": [
+      -0.010011067731371736,
+      -0.0021717585775017567
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 13996,
+      "auroc": 0.743260086521275,
+      "auroc_ci95": [
+       0.723443603201456,
+       0.7619931373875559
+      ]
+     },
+     "stanford": {
+      "n_test": 5961,
+      "auroc": 0.7077785243969992,
+      "auroc_ci95": [
+       0.6845025218120635,
+       0.728625280704401
+      ]
+     },
+     "utsw": {
+      "n_test": 4892,
+      "auroc": 0.7167145086514256,
+      "auroc_ci95": [
+       0.6829112828111306,
+       0.7501167818025928
+      ]
+     }
+    }
+   },
+   "sha256": "530034e1c09e5a19d58d24d984e5b4c75509c532e3319c9f8328fd796b9a6ccc"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ceftriaxone",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1920928955078125e-07,
+   "metrics": {
+    "auroc": 0.744184879306152,
+    "auprc": 0.9533761495697468,
+    "ece": 0.0049523147095222,
+    "susc_pct": 89.77826069459536,
+    "n_train": 73153,
+    "n_test": 24849
+   },
+   "test": {
+    "n_test": 24849,
+    "n_patients": 16321,
+    "susceptible_pct": 89.77826069459536,
+    "point": {
+     "auroc": 0.7249950145469344,
+     "auprc": 0.9475477980698088,
+     "spec90": 0.41929133858267714,
+     "brier": 0.08201833525159234,
+     "ece": 0.01761073449584169,
+     "cal_slope": 1.0988236205567041,
+     "cal_intercept": 0.020305215836355403,
+     "oe_ratio": 1.019697756540142
+    },
+    "ci95": {
+     "auroc": [
+      0.7101753953254581,
+      0.7374353467752706
+     ],
+     "auprc": [
+      0.9438440726653289,
+      0.9513768482738425
+     ],
+     "spec90": [
+      0.39204715253681227,
+      0.445105416649186
+     ],
+     "brier": [
+      0.07887716709904677,
+      0.0853346648457534
+     ],
+     "ece": [
+      0.014643169266026108,
+      0.022050550562557503
+     ],
+     "cal_slope": [
+      1.035023462940332,
+      1.1557031361632848
+     ],
+     "cal_intercept": [
+      -0.10878704848356424,
+      0.15259914412533776
+     ],
+     "oe_ratio": [
+      1.014905380144589,
+      1.0244529729462686
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.006541196784038639,
+     "ci95": [
+      -0.010673009292295888,
+      -0.0026027068117560268
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 13996,
+      "auroc": 0.7451659467816493,
+      "auroc_ci95": [
+       0.7253911397882302,
+       0.7636040240739982
+      ]
+     },
+     "stanford": {
+      "n_test": 5961,
+      "auroc": 0.7041614001458129,
+      "auroc_ci95": [
+       0.6803360199572368,
+       0.7261001973358494
+      ]
+     },
+     "utsw": {
+      "n_test": 4892,
+      "auroc": 0.7132527993256559,
+      "auroc_ci95": [
+       0.6792758753944558,
+       0.7482988326454868
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0088187608109906,
+     "mean_width90": 0.02161195733531955
+    }
+   },
+   "sha256": "63bda8047f7252c070c2915d3acf6e6912a22eee181407f99a42c1bd85a5e33d"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ceftriaxone",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7449242087600675,
+    "auprc": 0.9534786198883126,
+    "ece": 0.0062000776423578,
+    "susc_pct": 89.77826069459536,
+    "n_train": 73153,
+    "n_test": 24849
+   },
+   "test": {
+    "n_test": 24849,
+    "n_patients": 16321,
+    "susceptible_pct": 89.77826069459536,
+    "point": {
+     "auroc": 0.7424133404723845,
+     "auprc": 0.9529061982635281,
+     "spec90": 0.42440944881889764,
+     "brier": 0.08141548063525401,
+     "ece": 0.008657341333971103,
+     "cal_slope": 1.0464371309872333,
+     "cal_intercept": -0.19473036432660712,
+     "oe_ratio": 0.99125911410468
+    },
+    "ci95": {
+     "auroc": [
+      0.7284473804350551,
+      0.7546554107835177
+     ],
+     "auprc": [
+      0.9495020195272839,
+      0.9564089224879266
+     ],
+     "spec90": [
+      0.39831146279859836,
+      0.4494300856113537
+     ],
+     "brier": [
+      0.07807252952741808,
+      0.08490465146655453
+     ],
+     "ece": [
+      0.005241185628001184,
+      0.013018979719547605
+     ],
+     "cal_slope": [
+      0.9858949662962093,
+      1.1040000546906248
+     ],
+     "cal_intercept": [
+      -0.34068801992711845,
+      -0.045447824038258165
+     ],
+     "oe_ratio": [
+      0.9862904337451974,
+      0.9959364598786716
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.010877129141411479,
+     "ci95": [
+      0.00532253437369061,
+      0.016977636964365342
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 13996,
+      "auroc": 0.7502083113765885,
+      "auroc_ci95": [
+       0.7312171462912122,
+       0.7686710978321267
+      ]
+     },
+     "stanford": {
+      "n_test": 5961,
+      "auroc": 0.7085827792382327,
+      "auroc_ci95": [
+       0.6853468580200338,
+       0.7295459559958701
+      ]
+     },
+     "utsw": {
+      "n_test": 4892,
+      "auroc": 0.7146177197598788,
+      "auroc_ci95": [
+       0.681026453274618,
+       0.7490633667123909
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.006072650564213285,
+     "mean_width90": 0.019665309317630966
+    }
+   },
+   "sha256": "8c6b23859e4a316311a0be8a18d1124d58d7f821885407b4176ff25fffac5f13"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "piperacillin_tazobactam",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_piperacillin_tazobactam.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.677670829861093,
+    "auprc": 0.9778848663114674,
+    "ece": 0.0012620420265578,
+    "susc_pct": 96.0527386668837,
+    "n_train": 73023,
+    "n_test": 24574
+   },
+   "test": {
+    "n_test": 24574,
+    "n_patients": 15813,
+    "susceptible_pct": 96.0527386668837,
+    "point": {
+     "auroc": 0.662401576178771,
+     "auprc": 0.9762168150040856,
+     "spec90": 0.2804123711340206,
+     "brier": 0.03707734471407254,
+     "ece": 0.0010975061988504576,
+     "cal_slope": 1.0193490804654317,
+     "cal_intercept": -0.08616733694955246,
+     "oe_ratio": 0.998965936865507
+    },
+    "ci95": {
+     "auroc": [
+      0.6427328409034762,
+      0.6811298661171238
+     ],
+     "auprc": [
+      0.9738229079309274,
+      0.9785476345355447
+     ],
+     "spec90": [
+      0.2530348506401138,
+      0.3144032173702272
+     ],
+     "brier": [
+      0.03479203074387368,
+      0.03941717912024265
+     ],
+     "ece": [
+      0.0004239396233299943,
+      0.003949338967651398
+     ],
+     "cal_slope": [
+      0.927578993900438,
+      1.1136562571834085
+     ],
+     "cal_intercept": [
+      -0.39009792265221954,
+      0.2162167471384118
+     ],
+     "oe_ratio": [
+      0.9964277379296693,
+      1.001511569670678
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 14625,
+      "auroc": 0.6693879858657243,
+      "auroc_ci95": [
+       0.6432982094601134,
+       0.6955676334286027
+      ]
+     },
+     "stanford": {
+      "n_test": 7033,
+      "auroc": 0.6446424830593617,
+      "auroc_ci95": [
+       0.6111765195336964,
+       0.6774616860923642
+      ]
+     },
+     "utsw": {
+      "n_test": 2916,
+      "auroc": 0.6819497504946552,
+      "auroc_ci95": [
+       0.6297278802458437,
+       0.7294285191559057
+      ]
+     }
+    }
+   },
+   "sha256": "d586b85bf5dbae7a06bd526e25811430a9825d1df91d1c029f43efb0dd48f014"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "piperacillin_tazobactam",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.601549538543523e-07,
+   "metrics": {
+    "auroc": 0.6788591440905526,
+    "auprc": 0.9777624870840906,
+    "ece": 0.0010204752726302,
+    "susc_pct": 96.0527386668837,
+    "n_train": 73023,
+    "n_test": 24574
+   },
+   "test": {
+    "n_test": 24574,
+    "n_patients": 15813,
+    "susceptible_pct": 96.0527386668837,
+    "point": {
+     "auroc": 0.6633072849787822,
+     "auprc": 0.9761626053340708,
+     "spec90": 0.2876288659793814,
+     "brier": 0.03706455629071682,
+     "ece": 0.0018763076188888705,
+     "cal_slope": 0.9971595072913912,
+     "cal_intercept": 0.053168650734474354,
+     "oe_ratio": 1.0017640561313144
+    },
+    "ci95": {
+     "auroc": [
+      0.6440858716274565,
+      0.6827346184145731
+     ],
+     "auprc": [
+      0.9737717442752948,
+      0.9785361758654807
+     ],
+     "spec90": [
+      0.25481696422482575,
+      0.32141527402530473
+     ],
+     "brier": [
+      0.034800601223093586,
+      0.03937999201710253
+     ],
+     "ece": [
+      0.0005007978198134867,
+      0.004501878981188534
+     ],
+     "cal_slope": [
+      0.8958625304238249,
+      1.1024386789653753
+     ],
+     "cal_intercept": [
+      -0.26809356589334404,
+      0.37764598952508693
+     ],
+     "oe_ratio": [
+      0.9991449733250192,
+      1.004359358572065
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0009057088000111735,
+     "ci95": [
+      -0.004638469150355287,
+      0.006632968541544584
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 14625,
+      "auroc": 0.6708329551794681,
+      "auroc_ci95": [
+       0.6444493498478545,
+       0.6972800964705841
+      ]
+     },
+     "stanford": {
+      "n_test": 7033,
+      "auroc": 0.640563690387123,
+      "auroc_ci95": [
+       0.6069469740497276,
+       0.6734812838763927
+      ]
+     },
+     "utsw": {
+      "n_test": 2916,
+      "auroc": 0.691725880112993,
+      "auroc_ci95": [
+       0.6409148253401004,
+       0.7389581975614752
+      ]
+     }
+    }
+   },
+   "sha256": "eb5bb02af636a10b19cbd1c6b7f0406b56bcee483209f283333f0c86452073de"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "piperacillin_tazobactam",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.6806228238442898,
+    "auprc": 0.9777056390125286,
+    "ece": 0.0003587246300139,
+    "susc_pct": 96.0527386668837,
+    "n_train": 73023,
+    "n_test": 24574
+   },
+   "test": {
+    "n_test": 24574,
+    "n_patients": 15813,
+    "susceptible_pct": 96.0527386668837,
+    "point": {
+     "auroc": 0.6579779855589739,
+     "auprc": 0.9746403534703041,
+     "spec90": 0.2845360824742268,
+     "brier": 0.03709416660700306,
+     "ece": 0.0032148925264452203,
+     "cal_slope": 1.1686245469336962,
+     "cal_intercept": -0.4371653267789346,
+     "oe_ratio": 1.0026357474647738
+    },
+    "ci95": {
+     "auroc": [
+      0.6381504641229555,
+      0.6780601344276818
+     ],
+     "auprc": [
+      0.9717742235068828,
+      0.9772374031578112
+     ],
+     "spec90": [
+      0.25519143475820033,
+      0.31704781439762664
+     ],
+     "brier": [
+      0.034802963872973706,
+      0.03943227218047699
+     ],
+     "ece": [
+      0.0010522369862943548,
+      0.005832227540075175
+     ],
+     "cal_slope": [
+      1.0525686473372966,
+      1.2943988322116184
+     ],
+     "cal_intercept": [
+      -0.8118567037919401,
+      -0.08006227692687841
+     ],
+     "oe_ratio": [
+      1.0001037404015696,
+      1.005180258154198
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.004423590619797135,
+     "ci95": [
+      -0.011365906665248181,
+      0.0024497838229125073
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 14625,
+      "auroc": 0.6694677329365817,
+      "auroc_ci95": [
+       0.6434737640094945,
+       0.6964344424367606
+      ]
+     },
+     "stanford": {
+      "n_test": 7033,
+      "auroc": 0.6293518736239071,
+      "auroc_ci95": [
+       0.5920658545170016,
+       0.6637685025825217
+      ]
+     },
+     "utsw": {
+      "n_test": 2916,
+      "auroc": 0.6828880399208551,
+      "auroc_ci95": [
+       0.6322958580648878,
+       0.7325967483555226
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.003693687105541667,
+     "mean_width90": 0.009037229255032215
+    }
+   },
+   "sha256": "b41afbf180f61ea465910fa061c7e6ccc2155cbefd658d455f195cd0c9ae2ba4"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "piperacillin_tazobactam",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.6791954928135542,
+    "auprc": 0.9774801291503752,
+    "ece": 0.0010809221560313,
+    "susc_pct": 96.0527386668837,
+    "n_train": 73023,
+    "n_test": 24574
+   },
+   "test": {
+    "n_test": 24574,
+    "n_patients": 15813,
+    "susceptible_pct": 96.0527386668837,
+    "point": {
+     "auroc": 0.6724043583387055,
+     "auprc": 0.9776272583906831,
+     "spec90": 0.2670103092783505,
+     "brier": 0.03718411144884578,
+     "ece": 0.010290314722822115,
+     "cal_slope": 0.9335242817279036,
+     "cal_intercept": -0.09905463877187273,
+     "oe_ratio": 0.989426406550586
+    },
+    "ci95": {
+     "auroc": [
+      0.6531437549780963,
+      0.690215858484368
+     ],
+     "auprc": [
+      0.9752993446451845,
+      0.9797252459537741
+     ],
+     "spec90": [
+      0.2349853521764277,
+      0.29674828605652825
+     ],
+     "brier": [
+      0.03482474586950058,
+      0.039565346237625615
+     ],
+     "ece": [
+      0.007984412639956355,
+      0.012822392499076988
+     ],
+     "cal_slope": [
+      0.8405229999634789,
+      1.0232269341195683
+     ],
+     "cal_intercept": [
+      -0.3949989455942464,
+      0.2289144609231423
+     ],
+     "oe_ratio": [
+      0.9868973134557633,
+      0.9920044304848282
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.010002782159934442,
+     "ci95": [
+      -0.0029991515595520404,
+      0.022921225709371225
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 14625,
+      "auroc": 0.6674773293658174,
+      "auroc_ci95": [
+       0.6410556452006123,
+       0.6930401062535985
+      ]
+     },
+     "stanford": {
+      "n_test": 7033,
+      "auroc": 0.6484946880143648,
+      "auroc_ci95": [
+       0.6154632111537385,
+       0.6805959660230987
+      ]
+     },
+     "utsw": {
+      "n_test": 2916,
+      "auroc": 0.6921987580731468,
+      "auroc_ci95": [
+       0.639407216161598,
+       0.7381758709652918
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.003009727334607783,
+     "mean_width90": 0.009730762226534809
+    }
+   },
+   "sha256": "4766a81d71512ccdb67c0ff7f1e1044f166f123d011ee78ad78a33467d43bc6d"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "meropenem",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_meropenem.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.773147340790869,
+    "auprc": 0.996182899874482,
+    "ece": 0.0017148347964079,
+    "susc_pct": 98.94913601646714,
+    "n_train": 54168,
+    "n_test": 18461
+   },
+   "test": {
+    "n_test": 18461,
+    "n_patients": 12690,
+    "susceptible_pct": 98.94913601646714,
+    "point": {
+     "auroc": 0.7806398671707586,
+     "auprc": 0.9962998777425447,
+     "spec90": 0.4381443298969072,
+     "brier": 0.01000672179525091,
+     "ece": 0.001842685426006686,
+     "cal_slope": 0.9442944842227735,
+     "cal_intercept": 0.35185870630210536,
+     "oe_ratio": 1.001531343598397
+    },
+    "ci95": {
+     "auroc": [
+      0.74024270264636,
+      0.8187372081630152
+     ],
+     "auprc": [
+      0.9952102874229695,
+      0.9972462514763235
+     ],
+     "spec90": [
+      0.35292446524064175,
+      0.5243287653578486
+     ],
+     "brier": [
+      0.008463803775845226,
+      0.011681084607409502
+     ],
+     "ece": [
+      0.0008320958771964234,
+      0.003512234382379881
+     ],
+     "cal_slope": [
+      0.8314096389460004,
+      1.0687172862484116
+     ],
+     "cal_intercept": [
+      -0.13840179975234218,
+      0.8312888289936147
+     ],
+     "oe_ratio": [
+      0.999975277711327,
+      1.0031486314025875
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 7148,
+      "auroc": 0.7142913793391328,
+      "auroc_ci95": [
+       0.6497800763689829,
+       0.7726558776646074
+      ]
+     },
+     "stanford": {
+      "n_test": 5395,
+      "auroc": 0.8130686132641805,
+      "auroc_ci95": [
+       0.709458463500801,
+       0.8956992033802803
+      ]
+     },
+     "utsw": {
+      "n_test": 5918,
+      "auroc": 0.846763085399449,
+      "auroc_ci95": [
+       0.7834411541916231,
+       0.8979433254255987
+      ]
+     }
+    }
+   },
+   "sha256": "9f65a016e2a0d02ada67680f00e576cb0bd0d29c94bd13e3681f3613913e1e0a"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "meropenem",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.792790994548099e-07,
+   "metrics": {
+    "auroc": 0.772084215861062,
+    "auprc": 0.995846006721252,
+    "ece": 0.0015856456778098,
+    "susc_pct": 98.94913601646714,
+    "n_train": 54168,
+    "n_test": 18461
+   },
+   "test": {
+    "n_test": 18461,
+    "n_patients": 12690,
+    "susceptible_pct": 98.94913601646714,
+    "point": {
+     "auroc": 0.771423907344606,
+     "auprc": 0.9957425933862404,
+     "spec90": 0.4329896907216495,
+     "brier": 0.009976050055246852,
+     "ece": 0.001587926106295992,
+     "cal_slope": 0.9278524663628417,
+     "cal_intercept": 0.1627297984205823,
+     "oe_ratio": 0.9988247820673659
+    },
+    "ci95": {
+     "auroc": [
+      0.7286414008436064,
+      0.8102415141799882
+     ],
+     "auprc": [
+      0.9942472211971206,
+      0.9969296417219284
+     ],
+     "spec90": [
+      0.34269662921348315,
+      0.5109996738421395
+     ],
+     "brier": [
+      0.008395787901657657,
+      0.011699348458067884
+     ],
+     "ece": [
+      0.0005857197484438022,
+      0.003335736583697696
+     ],
+     "cal_slope": [
+      0.8155373817421402,
+      1.0213316090018925
+     ],
+     "cal_intercept": [
+      -0.26187010027394253,
+      0.6451480395639326
+     ],
+     "oe_ratio": [
+      0.9973078471249999,
+      1.000342153457778
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.009215959826152642,
+     "ci95": [
+      -0.02325218089052856,
+      0.00430292780475451
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 7148,
+      "auroc": 0.7241154764488822,
+      "auroc_ci95": [
+       0.6625514655104091,
+       0.781639850887471
+      ]
+     },
+     "stanford": {
+      "n_test": 5395,
+      "auroc": 0.7574179405991661,
+      "auroc_ci95": [
+       0.6208584246708893,
+       0.8588724883900267
+      ]
+     },
+     "utsw": {
+      "n_test": 5918,
+      "auroc": 0.8376273845771454,
+      "auroc_ci95": [
+       0.7720813048287664,
+       0.8909599881017526
+      ]
+     }
+    }
+   },
+   "sha256": "9a2b56a9efd542b540c350f156c1df061762b18dafa677c1ac699f3c773a2f2a"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "meropenem",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1920928955078125e-07,
+   "metrics": {
+    "auroc": 0.7761865941568904,
+    "auprc": 0.9964144556659784,
+    "ece": 0.0017584350861899,
+    "susc_pct": 98.94913601646714,
+    "n_train": 54168,
+    "n_test": 18461
+   },
+   "test": {
+    "n_test": 18461,
+    "n_patients": 12690,
+    "susceptible_pct": 98.94913601646714,
+    "point": {
+     "auroc": 0.7779324611617253,
+     "auprc": 0.9963409293927337,
+     "spec90": 0.42783505154639173,
+     "brier": 0.00997728056798123,
+     "ece": 0.0011954847443019804,
+     "cal_slope": 0.8870605175348456,
+     "cal_intercept": 0.380596219349781,
+     "oe_ratio": 0.9994784924799661
+    },
+    "ci95": {
+     "auroc": [
+      0.7371021122218137,
+      0.8149128611471501
+     ],
+     "auprc": [
+      0.9952635410136459,
+      0.9972239182734581
+     ],
+     "spec90": [
+      0.33859068282145205,
+      0.5172456682106709
+     ],
+     "brier": [
+      0.008386162311349631,
+      0.011695965805625957
+     ],
+     "ece": [
+      0.0004565076093972561,
+      0.0029906637401839395
+     ],
+     "cal_slope": [
+      0.7762642160272386,
+      0.9874112780187196
+     ],
+     "cal_intercept": [
+      -0.06599666811473069,
+      0.8566695630768294
+     ],
+     "oe_ratio": [
+      0.9979341759476776,
+      1.0010515507054991
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.0027074060090332974,
+     "ci95": [
+      -0.010942502196733702,
+      0.004679333642294855
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 7148,
+      "auroc": 0.7185122416835028,
+      "auroc_ci95": [
+       0.6551092735731725,
+       0.7764063602112371
+      ]
+     },
+     "stanford": {
+      "n_test": 5395,
+      "auroc": 0.7931286444976146,
+      "auroc_ci95": [
+       0.6901454878946176,
+       0.8761394627455854
+      ]
+     },
+     "utsw": {
+      "n_test": 5918,
+      "auroc": 0.8407084343089127,
+      "auroc_ci95": [
+       0.7776512359915313,
+       0.8907656626112009
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0016492273421000751,
+     "mean_width90": 0.004024018632274983
+    }
+   },
+   "sha256": "3cc4fb915ef8998e48e7522dd116485771775c7c0f71d652010ed284df0e7489"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "meropenem",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7730425097593034,
+    "auprc": 0.9954154692499686,
+    "ece": 0.0018220016359799,
+    "susc_pct": 98.94913601646714,
+    "n_train": 54168,
+    "n_test": 18461
+   },
+   "test": {
+    "n_test": 18461,
+    "n_patients": 12690,
+    "susceptible_pct": 98.94913601646714,
+    "point": {
+     "auroc": 0.7376889145487412,
+     "auprc": 0.9952268097544614,
+     "spec90": 0.39690721649484534,
+     "brier": 0.0101304370667113,
+     "ece": 0.004820674320985832,
+     "cal_slope": 0.8032305314194317,
+     "cal_intercept": 0.2775595253817415,
+     "oe_ratio": 0.9953278713820009
+    },
+    "ci95": {
+     "auroc": [
+      0.6922522995417852,
+      0.7784774438718242
+     ],
+     "auprc": [
+      0.9937300042435779,
+      0.9964242886260429
+     ],
+     "spec90": [
+      0.30767326732673267,
+      0.478690697219915
+     ],
+     "brier": [
+      0.008496240736040706,
+      0.011895653888186121
+     ],
+     "ece": [
+      0.0033761627278463173,
+      0.0066024595223454
+     ],
+     "cal_slope": [
+      0.6724828979966224,
+      0.9049852459337288
+     ],
+     "cal_intercept": [
+      -0.21650947219343733,
+      0.9429293526986463
+     ],
+     "oe_ratio": [
+      0.993589852314469,
+      0.9969740280942919
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.042950952622017424,
+     "ci95": [
+      -0.06296675712706605,
+      -0.02241036637800804
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 7148,
+      "auroc": 0.716621306484558,
+      "auroc_ci95": [
+       0.6521222978790556,
+       0.7780054771120799
+      ]
+     },
+     "stanford": {
+      "n_test": 5395,
+      "auroc": 0.7682923334813817,
+      "auroc_ci95": [
+       0.6369530238624007,
+       0.8638940441588867
+      ]
+     },
+     "utsw": {
+      "n_test": 5918,
+      "auroc": 0.837875939849624,
+      "auroc_ci95": [
+       0.7751052433215261,
+       0.8910980230781538
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0012955680366700177,
+     "mean_width90": 0.0041489739640744065
+    }
+   },
+   "sha256": "4150b08529944f5753a99c2ca13991b73b9c489c2d93af677de2773852e71738"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_ciprofloxacin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.7196872158574287,
+    "auprc": 0.8826927936327869,
+    "ece": 0.0072888834484021,
+    "susc_pct": 77.89483585739816,
+    "n_train": 94335,
+    "n_test": 31893
+   },
+   "test": {
+    "n_test": 31893,
+    "n_patients": 19616,
+    "susceptible_pct": 77.89483585739816,
+    "point": {
+     "auroc": 0.7224957984368786,
+     "auprc": 0.8837734693364833,
+     "spec90": 0.39617021276595743,
+     "brier": 0.148730042415477,
+     "ece": 0.006020145100108267,
+     "cal_slope": 1.0084406922004023,
+     "cal_intercept": -0.02599963111971289,
+     "oe_ratio": 0.9969126028898381
+    },
+    "ci95": {
+     "auroc": [
+      0.7137574460360829,
+      0.7311457281767599
+     ],
+     "auprc": [
+      0.8787443753314369,
+      0.88850778298534
+     ],
+     "spec90": [
+      0.37723444617131047,
+      0.4136707533401259
+     ],
+     "brier": [
+      0.14599296349810809,
+      0.15174776768901074
+     ],
+     "ece": [
+      0.004522066061256003,
+      0.011737311211821484
+     ],
+     "cal_slope": [
+      0.9668690729478587,
+      1.0497386280932859
+     ],
+     "cal_intercept": [
+      -0.09224352381990361,
+      0.03787586125987031
+     ],
+     "oe_ratio": [
+      0.990846024398013,
+      1.0031321732619287
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 15482,
+      "auroc": 0.7255137172518811,
+      "auroc_ci95": [
+       0.7122999748904356,
+       0.7388837816284333
+      ]
+     },
+     "stanford": {
+      "n_test": 9502,
+      "auroc": 0.7188858574510958,
+      "auroc_ci95": [
+       0.7042382613916854,
+       0.7343772053199649
+      ]
+     },
+     "utsw": {
+      "n_test": 6909,
+      "auroc": 0.7083960126627776,
+      "auroc_ci95": [
+       0.6908360493732231,
+       0.7243194823925821
+      ]
+     }
+    }
+   },
+   "sha256": "5c3debd62016b37ab5fa7dcd82bcf36884e05fe3bd77571ddfb59155290afeeb"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.746572467764551e-07,
+   "metrics": {
+    "auroc": 0.7190273727519461,
+    "auprc": 0.8847423102682727,
+    "ece": 0.0098466590728564,
+    "susc_pct": 77.89483585739816,
+    "n_train": 94335,
+    "n_test": 31893
+   },
+   "test": {
+    "n_test": 31893,
+    "n_patients": 19616,
+    "susceptible_pct": 77.89483585739816,
+    "point": {
+     "auroc": 0.7185909383267345,
+     "auprc": 0.8843598080498215,
+     "spec90": 0.39702127659574465,
+     "brier": 0.14939520838134196,
+     "ece": 0.009157210434693334,
+     "cal_slope": 0.9935216926874961,
+     "cal_intercept": 0.04636502643581597,
+     "oe_ratio": 1.0076140399612032
+    },
+    "ci95": {
+     "auroc": [
+      0.7100037559488216,
+      0.727360338412553
+     ],
+     "auprc": [
+      0.8795533095021165,
+      0.8892677173659245
+     ],
+     "spec90": [
+      0.3766845672608897,
+      0.4174689306501917
+     ],
+     "brier": [
+      0.14657963030482277,
+      0.15232296890171884
+     ],
+     "ece": [
+      0.006604713929827807,
+      0.014674198079518315
+     ],
+     "cal_slope": [
+      0.9515200180339141,
+      1.0393987524725357
+     ],
+     "cal_intercept": [
+      -0.02321494428322621,
+      0.11325977039558459
+     ],
+     "oe_ratio": [
+      1.0013414628175836,
+      1.0137652891813267
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.003904860110144126,
+     "ci95": [
+      -0.006555501919175283,
+      -0.0014336051263849103
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 15482,
+      "auroc": 0.7190155313698147,
+      "auroc_ci95": [
+       0.705783080693821,
+       0.7327323034253705
+      ]
+     },
+     "stanford": {
+      "n_test": 9502,
+      "auroc": 0.713924998662601,
+      "auroc_ci95": [
+       0.6991450250349203,
+       0.7291583595636209
+      ]
+     },
+     "utsw": {
+      "n_test": 6909,
+      "auroc": 0.7020158286768864,
+      "auroc_ci95": [
+       0.6838262935306022,
+       0.71885333617137
+      ]
+     }
+    }
+   },
+   "sha256": "8fc5199e263ea2e8ca15933dc0ce95898faed14c3b66d286a3dcab41578b4e1e"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.0728836064011205e-07,
+   "metrics": {
+    "auroc": 0.7231261999113296,
+    "auprc": 0.8862873186640121,
+    "ece": 0.004781838649267,
+    "susc_pct": 77.89483585739816,
+    "n_train": 94335,
+    "n_test": 31893
+   },
+   "test": {
+    "n_test": 31893,
+    "n_patients": 19616,
+    "susceptible_pct": 77.89483585739816,
+    "point": {
+     "auroc": 0.7203829496043664,
+     "auprc": 0.884987796937261,
+     "spec90": 0.3797163120567376,
+     "brier": 0.14904019625974643,
+     "ece": 0.008697047528200058,
+     "cal_slope": 0.98206821425504,
+     "cal_intercept": 0.0727836558281368,
+     "oe_ratio": 1.0104369109505529
+    },
+    "ci95": {
+     "auroc": [
+      0.7118508456088214,
+      0.7289376637353234
+     ],
+     "auprc": [
+      0.8801624439804695,
+      0.8897716991773672
+     ],
+     "spec90": [
+      0.36448631809019083,
+      0.41017178403988247
+     ],
+     "brier": [
+      0.1463258182751892,
+      0.15195868458300588
+     ],
+     "ece": [
+      0.005839902057155332,
+      0.014204341091439953
+     ],
+     "cal_slope": [
+      0.942297713036348,
+      1.0242859504915098
+     ],
+     "cal_intercept": [
+      0.011078938927135287,
+      0.13640200000080005
+     ],
+     "oe_ratio": [
+      1.0040909165185445,
+      1.0167102411756317
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.002112848832512171,
+     "ci95": [
+      -0.004759217944259525,
+      0.0003449518489080728
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 15482,
+      "auroc": 0.7186133427635936,
+      "auroc_ci95": [
+       0.7048677942020803,
+       0.7315128543271874
+      ]
+     },
+     "stanford": {
+      "n_test": 9502,
+      "auroc": 0.7186273260611248,
+      "auroc_ci95": [
+       0.7040290014615895,
+       0.7345488118945961
+      ]
+     },
+     "utsw": {
+      "n_test": 6909,
+      "auroc": 0.7045907586791372,
+      "auroc_ci95": [
+       0.6869041364627128,
+       0.7210363305459649
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.013054097050014608,
+     "mean_width90": 0.03192609404103199
+    }
+   },
+   "sha256": "5f0c38be2458d8d1c56153877481815315a6b8152f1d8d8c4f21092362bd98f0"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7236536627324562,
+    "auprc": 0.8868801189891409,
+    "ece": 0.0094520495772021,
+    "susc_pct": 77.89483585739816,
+    "n_train": 94335,
+    "n_test": 31893
+   },
+   "test": {
+    "n_test": 31893,
+    "n_patients": 19616,
+    "susceptible_pct": 77.89483585739816,
+    "point": {
+     "auroc": 0.7243437039929909,
+     "auprc": 0.886728029925983,
+     "spec90": 0.40297872340425533,
+     "brier": 0.149009321523111,
+     "ece": 0.011685543690429687,
+     "cal_slope": 0.9927232819265402,
+     "cal_intercept": 0.0054698755445480975,
+     "oe_ratio": 0.9994651744456924
+    },
+    "ci95": {
+     "auroc": [
+      0.7156865961733291,
+      0.732977083413124
+     ],
+     "auprc": [
+      0.881819399759617,
+      0.8914540646865937
+     ],
+     "spec90": [
+      0.38044718285444307,
+      0.41962778718832594
+     ],
+     "brier": [
+      0.14617353590260837,
+      0.15197617232053995
+     ],
+     "ece": [
+      0.00878037744702006,
+      0.017672389643747424
+     ],
+     "cal_slope": [
+      0.9506721203188633,
+      1.0383320334207928
+     ],
+     "cal_intercept": [
+      -0.06541687046471746,
+      0.07447332606203566
+     ],
+     "oe_ratio": [
+      0.9931438701812836,
+      1.005576869304603
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0018479055561122504,
+     "ci95": [
+      -0.001330401802413958,
+      0.004984002708032594
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 15482,
+      "auroc": 0.7219898694830255,
+      "auroc_ci95": [
+       0.7086661506554685,
+       0.735789521457714
+      ]
+     },
+     "stanford": {
+      "n_test": 9502,
+      "auroc": 0.7145736939285326,
+      "auroc_ci95": [
+       0.699594647297103,
+       0.7299644956337389
+      ]
+     },
+     "utsw": {
+      "n_test": 6909,
+      "auroc": 0.7026707999353631,
+      "auroc_ci95": [
+       0.6846050159884729,
+       0.7191344631238171
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.008380950942409055,
+     "mean_width90": 0.02732014776332576
+    }
+   },
+   "sha256": "7ee6abaa0ce67f9db2c2b43755827f1ff609bf8f3fe850e61c12daf55c30d37e"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "gentamicin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_gentamicin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6287853406996385,
+    "auprc": 0.9253258671565334,
+    "ece": 0.0042144338178954,
+    "susc_pct": 89.80135425692372,
+    "n_train": 92090,
+    "n_test": 31161
+   },
+   "test": {
+    "n_test": 31161,
+    "n_patients": 19522,
+    "susceptible_pct": 89.80135425692372,
+    "point": {
+     "auroc": 0.6293129355913226,
+     "auprc": 0.9260025738275945,
+     "spec90": 0.2684078036500944,
+     "brier": 0.08868333493112417,
+     "ece": 0.004118366035982502,
+     "cal_slope": 1.0402183070251136,
+     "cal_intercept": -0.11691008242846142,
+     "oe_ratio": 0.996909724450442
+    },
+    "ci95": {
+     "auroc": [
+      0.6146016770608373,
+      0.6447746092124764
+     ],
+     "auprc": [
+      0.9215903453941563,
+      0.9305535586740215
+     ],
+     "spec90": [
+      0.24322776982953032,
+      0.292748807009031
+     ],
+     "brier": [
+      0.08520787732940358,
+      0.09216286169105761
+     ],
+     "ece": [
+      0.002303225824374556,
+      0.008708068410092496
+     ],
+     "cal_slope": [
+      0.9473077281827185,
+      1.137795152456996
+     ],
+     "cal_intercept": [
+      -0.33921928443437577,
+      0.10269475363554553
+     ],
+     "oe_ratio": [
+      0.9919448152004239,
+      1.001701540415214
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 16072,
+      "auroc": 0.6364862898227082,
+      "auroc_ci95": [
+       0.6142731019525657,
+       0.6584590228010933
+      ]
+     },
+     "stanford": {
+      "n_test": 8401,
+      "auroc": 0.6055689011496153,
+      "auroc_ci95": [
+       0.5766939867966814,
+       0.6321841109608418
+      ]
+     },
+     "utsw": {
+      "n_test": 6688,
+      "auroc": 0.6252416203379919,
+      "auroc_ci95": [
+       0.5990121880292854,
+       0.6523491141048452
+      ]
+     }
+    }
+   },
+   "sha256": "5f576491b3be52995d6dfeb825a0703b4a3cd0dcb0a8fd7f6f61a20dbfdf8d8c"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "gentamicin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.0491439239590505e-07,
+   "metrics": {
+    "auroc": 0.6304669390772565,
+    "auprc": 0.9260936629629772,
+    "ece": 0.0025627689218601,
+    "susc_pct": 89.80135425692372,
+    "n_train": 92090,
+    "n_test": 31161
+   },
+   "test": {
+    "n_test": 31161,
+    "n_patients": 19522,
+    "susceptible_pct": 89.80135425692372,
+    "point": {
+     "auroc": 0.6300936172544029,
+     "auprc": 0.9258728727790057,
+     "spec90": 0.2599118942731278,
+     "brier": 0.08872906274947552,
+     "ece": 0.008039062083360539,
+     "cal_slope": 1.0337989847620581,
+     "cal_intercept": -0.1669125640368773,
+     "oe_ratio": 0.991163010744794
+    },
+    "ci95": {
+     "auroc": [
+      0.6151795519577709,
+      0.6457221389632161
+     ],
+     "auprc": [
+      0.9213945762408918,
+      0.9305420403774297
+     ],
+     "spec90": [
+      0.23633493878807998,
+      0.28637811878177466
+     ],
+     "brier": [
+      0.08528146744175377,
+      0.09222192126679873
+     ],
+     "ece": [
+      0.004177362996054676,
+      0.012650004224390164
+     ],
+     "cal_slope": [
+      0.9337436051444874,
+      1.130697485060892
+     ],
+     "cal_intercept": [
+      -0.3946580845334901,
+      0.06385426540572355
+     ],
+     "oe_ratio": [
+      0.9862576505951949,
+      0.9959964485746102
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0007806816630803182,
+     "ci95": [
+      -0.0028162310436973368,
+      0.003986182122914266
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 16072,
+      "auroc": 0.6366061795961705,
+      "auroc_ci95": [
+       0.6135112480390467,
+       0.6591273921142525
+      ]
+     },
+     "stanford": {
+      "n_test": 8401,
+      "auroc": 0.6082033214170094,
+      "auroc_ci95": [
+       0.5795976904798904,
+       0.635794028141434
+      ]
+     },
+     "utsw": {
+      "n_test": 6688,
+      "auroc": 0.6228765859421612,
+      "auroc_ci95": [
+       0.5974669661380742,
+       0.6498287563128475
+      ]
+     }
+    }
+   },
+   "sha256": "af53b395dd14a48ddb45df8972a7199f3cf34fd91d81d077c363853f84509d40"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "gentamicin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.6303295500794817,
+    "auprc": 0.926243228696159,
+    "ece": 0.0019930572986586,
+    "susc_pct": 89.80135425692372,
+    "n_train": 92090,
+    "n_test": 31161
+   },
+   "test": {
+    "n_test": 31161,
+    "n_patients": 19522,
+    "susceptible_pct": 89.80135425692372,
+    "point": {
+     "auroc": 0.6295359537606522,
+     "auprc": 0.9260056501967704,
+     "spec90": 0.26400251730648205,
+     "brier": 0.08868772962581552,
+     "ece": 0.004459669803619398,
+     "cal_slope": 0.9877418171985988,
+     "cal_intercept": -0.017278624477853086,
+     "oe_ratio": 0.9958129535946568
+    },
+    "ci95": {
+     "auroc": [
+      0.6145500812640835,
+      0.6450853791755105
+     ],
+     "auprc": [
+      0.9215739500709734,
+      0.9306212076532417
+     ],
+     "spec90": [
+      0.24206960929158494,
+      0.2892772736269568
+     ],
+     "brier": [
+      0.08526291838039263,
+      0.0921194525048023
+     ],
+     "ece": [
+      0.0017248992821314287,
+      0.008843483077608981
+     ],
+     "cal_slope": [
+      0.891020702971195,
+      1.080790111059991
+     ],
+     "cal_intercept": [
+      -0.23248322010295155,
+      0.19996344813990005
+     ],
+     "oe_ratio": [
+      0.9909402192005387,
+      1.0006583161112614
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.00022301816932956964,
+     "ci95": [
+      -0.004469096222853561,
+      0.004680023447432335
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 16072,
+      "auroc": 0.6356112568202181,
+      "auroc_ci95": [
+       0.6132473853597882,
+       0.6587037992639277
+      ]
+     },
+     "stanford": {
+      "n_test": 8401,
+      "auroc": 0.6099134516700073,
+      "auroc_ci95": [
+       0.5817813474436153,
+       0.6379382555120457
+      ]
+     },
+     "utsw": {
+      "n_test": 6688,
+      "auroc": 0.6214051319132459,
+      "auroc_ci95": [
+       0.5951475349234889,
+       0.6476978174716861
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0061466134199950105,
+     "mean_width90": 0.015056826386340476
+    }
+   },
+   "sha256": "a5e1b949a9158b8058ef8dda93b019b3a27f37f89bb755e86b0b2799beaea2c7"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "gentamicin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.636199331397533,
+    "auprc": 0.9284009484500692,
+    "ece": 0.0030875758696136,
+    "susc_pct": 89.80135425692372,
+    "n_train": 92090,
+    "n_test": 31161
+   },
+   "test": {
+    "n_test": 31161,
+    "n_patients": 19522,
+    "susceptible_pct": 89.80135425692372,
+    "point": {
+     "auroc": 0.6374480104986874,
+     "auprc": 0.9289122254414288,
+     "spec90": 0.26620516047828824,
+     "brier": 0.08869966616977763,
+     "ece": 0.01098837527843672,
+     "cal_slope": 1.0079933798370948,
+     "cal_intercept": -0.1474973640642558,
+     "oe_ratio": 0.9879465008588267
+    },
+    "ci95": {
+     "auroc": [
+      0.6219850823450277,
+      0.6523232385303592
+     ],
+     "auprc": [
+      0.9243641789767426,
+      0.9334508525384454
+     ],
+     "spec90": [
+      0.2378744424425287,
+      0.2884806657617202
+     ],
+     "brier": [
+      0.08517082632395323,
+      0.09223120581811488
+     ],
+     "ece": [
+      0.0071822587878127165,
+      0.01551500473072461
+     ],
+     "cal_slope": [
+      0.9119866834110849,
+      1.099296872406126
+     ],
+     "cal_intercept": [
+      -0.3636572015296912,
+      0.08130816676899505
+     ],
+     "oe_ratio": [
+      0.9830123588168329,
+      0.9927280864907577
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.008135074907364759,
+     "ci95": [
+      0.002654794645008801,
+      0.013521081028504137
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 16072,
+      "auroc": 0.6393034882297642,
+      "auroc_ci95": [
+       0.6167595840131057,
+       0.6615270070111064
+      ]
+     },
+     "stanford": {
+      "n_test": 8401,
+      "auroc": 0.6099797491372719,
+      "auroc_ci95": [
+       0.581295942387912,
+       0.6378483496417685
+      ]
+     },
+     "utsw": {
+      "n_test": 6688,
+      "auroc": 0.6214276541687904,
+      "auroc_ci95": [
+       0.5952998150756686,
+       0.6488904318744201
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0053499495398960754,
+     "mean_width90": 0.01739536318929797
+    }
+   },
+   "sha256": "ac03f4307a0422a429bee5c638f574ef1bebb14eafac6e23e1b3894888cf6604"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "amikacin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_urine_amikacin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.7768002228515716,
+    "auprc": 0.9968760213530352,
+    "ece": 0.0018340199222655,
+    "susc_pct": 99.09512584594329,
+    "n_train": 38763,
+    "n_test": 13151
+   },
+   "test": {
+    "n_test": 13151,
+    "n_patients": 9281,
+    "susceptible_pct": 99.09512584594327,
+    "point": {
+     "auroc": 0.7610977632305224,
+     "auprc": 0.9965491120432993,
+     "spec90": 0.37815126050420167,
+     "brier": 0.008785218306048236,
+     "ece": 0.0021337639985451835,
+     "cal_slope": 0.9930899606983387,
+     "cal_intercept": 0.19507670458986107,
+     "oe_ratio": 1.0015977346242093
+    },
+    "ci95": {
+     "auroc": [
+      0.7170457426467646,
+      0.8104554837496128
+     ],
+     "auprc": [
+      0.9954202370805098,
+      0.9977151888978621
+     ],
+     "spec90": [
+      0.27498774509803925,
+      0.4790002777970693
+     ],
+     "brier": [
+      0.007093321509628143,
+      0.010609092701957305
+     ],
+     "ece": [
+      0.0007005251045394951,
+      0.003919760744288117
+     ],
+     "cal_slope": [
+      0.8233860475284309,
+      1.1909514434475232
+     ],
+     "cal_intercept": [
+      -0.6172595563347067,
+      0.9507216443890385
+     ],
+     "oe_ratio": [
+      0.9997708021526027,
+      1.0034110561898686
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 6826,
+      "auroc": 0.6953119712730849,
+      "auroc_ci95": [
+       0.615974272149752,
+       0.7724410817593781
+      ]
+     },
+     "stanford": {
+      "n_test": 5210,
+      "auroc": 0.7932207174584782,
+      "auroc_ci95": [
+       0.6922678402631076,
+       0.8907659136921415
+      ]
+     },
+     "utsw": {
+      "n_test": 1115,
+      "auroc": 0.6393615023474178,
+      "auroc_ci95": [
+       0.5502118996243907,
+       0.7261953797561651
+      ]
+     }
+    }
+   },
+   "sha256": "dccd53b5271be323ac9facae7baf3ec49bf5c58a420d849871d6071efba12f61"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "amikacin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_urine_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 2.3050834019322508e-07,
+   "metrics": {
+    "auroc": 0.7819349655147511,
+    "auprc": 0.9969309140705396,
+    "ece": 0.002416440707652,
+    "susc_pct": 99.09512584594329,
+    "n_train": 38763,
+    "n_test": 13151
+   },
+   "test": {
+    "n_test": 13151,
+    "n_patients": 9281,
+    "susceptible_pct": 99.09512584594327,
+    "point": {
+     "auroc": 0.7653481282015568,
+     "auprc": 0.9967760363109922,
+     "spec90": 0.42016806722689076,
+     "brier": 0.00877151912114345,
+     "ece": 0.0006019598225676441,
+     "cal_slope": 0.8882891427268317,
+     "cal_intercept": 0.4607789493739372,
+     "oe_ratio": 1.0000565391358194
+    },
+    "ci95": {
+     "auroc": [
+      0.7232910500262516,
+      0.8110678982035338
+     ],
+     "auprc": [
+      0.995768281538751,
+      0.9977653289399319
+     ],
+     "spec90": [
+      0.32161955691367455,
+      0.5188679245283019
+     ],
+     "brier": [
+      0.007129096178079181,
+      0.010538868557406723
+     ],
+     "ece": [
+      0.00045156067819505496,
+      0.002881331980169465
+     ],
+     "cal_slope": [
+      0.753167150747095,
+      1.0504227743995869
+     ],
+     "cal_intercept": [
+      -0.22470926561303303,
+      1.0972704723882
+     ],
+     "oe_ratio": [
+      0.9982491991404101,
+      1.0020295257462735
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0042503649710344815,
+     "ci95": [
+      -0.012431193358083853,
+      0.020278347191601966
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 6826,
+      "auroc": 0.7249644695513012,
+      "auroc_ci95": [
+       0.6418577004487954,
+       0.799568045804659
+      ]
+     },
+     "stanford": {
+      "n_test": 5210,
+      "auroc": 0.7727162997296253,
+      "auroc_ci95": [
+       0.6681156816270817,
+       0.8717876827115304
+      ]
+     },
+     "utsw": {
+      "n_test": 1115,
+      "auroc": 0.633755868544601,
+      "auroc_ci95": [
+       0.538655388589736,
+       0.7260995877853091
+      ]
+     }
+    }
+   },
+   "sha256": "6c3ba512cd7ddec6036fd456a520eb5f5013ed678ce54de786ee72a06e8fb0e4"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "amikacin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_urine_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.7828351414230518,
+    "auprc": 0.9968668310922928,
+    "ece": 0.0023678934489825,
+    "susc_pct": 99.09512584594329,
+    "n_train": 38763,
+    "n_test": 13151
+   },
+   "test": {
+    "n_test": 13151,
+    "n_patients": 9281,
+    "susceptible_pct": 99.09512584594327,
+    "point": {
+     "auroc": 0.7647020134020459,
+     "auprc": 0.9967262598178502,
+     "spec90": 0.44537815126050423,
+     "brier": 0.008723572748442468,
+     "ece": 0.00035877803300927237,
+     "cal_slope": 0.8876668132942205,
+     "cal_intercept": 0.46082213473567996,
+     "oe_ratio": 1.0000725995225717
+    },
+    "ci95": {
+     "auroc": [
+      0.7206208689087894,
+      0.8116945734508649
+     ],
+     "auprc": [
+      0.995696215878181,
+      0.9977682894061658
+     ],
+     "spec90": [
+      0.35132669165515884,
+      0.5586032152842497
+     ],
+     "brier": [
+      0.007033577654575142,
+      0.010522761896238434
+     ],
+     "ece": [
+      0.00034342244056318757,
+      0.002468992117372552
+     ],
+     "cal_slope": [
+      0.7397771232894377,
+      1.0447811621869607
+     ],
+     "cal_intercept": [
+      -0.22485060142311306,
+      1.1240750111022553
+     ],
+     "oe_ratio": [
+      0.9982893395108383,
+      1.001891261010929
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0036042501715235487,
+     "ci95": [
+      -0.009772680586364223,
+      0.01650652813644695
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 6826,
+      "auroc": 0.7014208198476869,
+      "auroc_ci95": [
+       0.6195438575836981,
+       0.7831656002161059
+      ]
+     },
+     "stanford": {
+      "n_test": 5210,
+      "auroc": 0.7914916473541908,
+      "auroc_ci95": [
+       0.6892838471423562,
+       0.892487533231534
+      ]
+     },
+     "utsw": {
+      "n_test": 1115,
+      "auroc": 0.6368356807511737,
+      "auroc_ci95": [
+       0.5473089922674934,
+       0.7257729607955378
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0016259478527913865,
+     "mean_width90": 0.003952069052652052
+    }
+   },
+   "sha256": "d172f498c6c8d9e62a748ee8e3346681efa5de2ba75651fa134591638752a102"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "urine",
+   "drug": "amikacin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_urine_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7984221773423918,
+    "auprc": 0.9971877530559212,
+    "ece": 0.0026542666057933,
+    "susc_pct": 99.09512584594329,
+    "n_train": 38763,
+    "n_test": 13151
+   },
+   "test": {
+    "n_test": 13151,
+    "n_patients": 9281,
+    "susceptible_pct": 99.09512584594327,
+    "point": {
+     "auroc": 0.7362713501606905,
+     "auprc": 0.9963774459739376,
+     "spec90": 0.3949579831932773,
+     "brier": 0.008765983628432377,
+     "ece": 0.0028053649777016495,
+     "cal_slope": 0.8053051223670986,
+     "cal_intercept": 0.4912451154117605,
+     "oe_ratio": 0.997177010032897
+    },
+    "ci95": {
+     "auroc": [
+      0.6855510487286322,
+      0.7865066880682531
+     ],
+     "auprc": [
+      0.9952619006178474,
+      0.9973856297302317
+     ],
+     "spec90": [
+      0.2884572072072072,
+      0.49259761797075224
+     ],
+     "brier": [
+      0.007088631658958348,
+      0.010529371714524421
+     ],
+     "ece": [
+      0.0011714019859419972,
+      0.004599245014602262
+     ],
+     "cal_slope": [
+      0.619780327434879,
+      0.9840883576859905
+     ],
+     "cal_intercept": [
+      -0.33415401398293365,
+      1.430297262910893
+     ],
+     "oe_ratio": [
+      0.9953715171818371,
+      0.9988285167092672
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.02482641306983191,
+     "ci95": [
+      -0.06293575738407792,
+      0.010201195147144794
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 6826,
+      "auroc": 0.727118191987834,
+      "auroc_ci95": [
+       0.6485002339547604,
+       0.8005733447495994
+      ]
+     },
+     "stanford": {
+      "n_test": 5210,
+      "auroc": 0.7407722576284279,
+      "auroc_ci95": [
+       0.6290480815709472,
+       0.8507266674835147
+      ]
+     },
+     "utsw": {
+      "n_test": 1115,
+      "auroc": 0.6491737089201878,
+      "auroc_ci95": [
+       0.5638789639858004,
+       0.7342983312550296
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0015977991004184197,
+     "mean_width90": 0.005091794034245619
+    }
+   },
+   "sha256": "e22e65edc34ffa1d2239020353093b2846a40687815b2e9e0e92cb3dc0000de5"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ceftriaxone",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_ceftriaxone.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6768240276391032,
+    "auprc": 0.9043617583181628,
+    "ece": 0.0113018613550061,
+    "susc_pct": 83.88791593695272,
+    "n_train": 13428,
+    "n_test": 4568
+   },
+   "test": {
+    "n_test": 4568,
+    "n_patients": 3527,
+    "susceptible_pct": 83.88791593695272,
+    "point": {
+     "auroc": 0.6704058571412362,
+     "auprc": 0.8995813279053312,
+     "spec90": 0.32608695652173914,
+     "brier": 0.12561304924278313,
+     "ece": 0.009914602660255966,
+     "cal_slope": 0.9085275631872634,
+     "cal_intercept": 0.1430389194343186,
+     "oe_ratio": 1.0003544500208401
+    },
+    "ci95": {
+     "auroc": [
+      0.6445188864890798,
+      0.6949538421076141
+     ],
+     "auprc": [
+      0.8866223676972935,
+      0.9132096112321038
+     ],
+     "spec90": [
+      0.28156539455733465,
+      0.368791511428293
+     ],
+     "brier": [
+      0.11806378024119768,
+      0.13365314919906593
+     ],
+     "ece": [
+      0.008164800939050181,
+      0.02405077745906877
+     ],
+     "cal_slope": [
+      0.7799489546458461,
+      1.0373485691867708
+     ],
+     "cal_intercept": [
+      -0.089666937917327,
+      0.36887944173848186
+     ],
+     "oe_ratio": [
+      0.9867152406107901,
+      1.014464191228514
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 2543,
+      "auroc": 0.6584102287045311,
+      "auroc_ci95": [
+       0.6263007576584422,
+       0.6911101522375207
+      ]
+     },
+     "stanford": {
+      "n_test": 1404,
+      "auroc": 0.6745165846768302,
+      "auroc_ci95": [
+       0.6246974814620814,
+       0.7227700849517469
+      ]
+     },
+     "utsw": {
+      "n_test": 621,
+      "auroc": 0.6562927709344283,
+      "auroc_ci95": [
+       0.5600118238610204,
+       0.7433664377401168
+      ]
+     }
+    }
+   },
+   "sha256": "9aedc3004ea4f5d7247db5071cf22fa0d4e772879d02b6afb8cb037a44098f45"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ceftriaxone",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1280927858514644e-07,
+   "metrics": {
+    "auroc": 0.6778168115185622,
+    "auprc": 0.9013990600898484,
+    "ece": 0.0089535107669433,
+    "susc_pct": 83.88791593695272,
+    "n_train": 13428,
+    "n_test": 4568
+   },
+   "test": {
+    "n_test": 4568,
+    "n_patients": 3527,
+    "susceptible_pct": 83.88791593695272,
+    "point": {
+     "auroc": 0.675526671848053,
+     "auprc": 0.897417511111936,
+     "spec90": 0.32608695652173914,
+     "brier": 0.12680423429351387,
+     "ece": 0.03166283837943887,
+     "cal_slope": 0.9928289582995263,
+     "cal_intercept": -0.20271434105717911,
+     "oe_ratio": 0.9707991485700712
+    },
+    "ci95": {
+     "auroc": [
+      0.6507291415558718,
+      0.7005878583524394
+     ],
+     "auprc": [
+      0.8832242009774197,
+      0.9113618029824816
+     ],
+     "spec90": [
+      0.279258592532106,
+      0.3674747057827449
+     ],
+     "brier": [
+      0.11872842631454585,
+      0.13521827360996944
+     ],
+     "ece": [
+      0.021791087453197362,
+      0.04379912150676402
+     ],
+     "cal_slope": [
+      0.8539623703604915,
+      1.1420834542556975
+     ],
+     "cal_intercept": [
+      -0.4845887081943486,
+      0.06767217704741155
+     ],
+     "oe_ratio": [
+      0.9565920341396256,
+      0.9843792817186102
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.005120814706816801,
+     "ci95": [
+      -0.007344788852954157,
+      0.018061423150705327
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2543,
+      "auroc": 0.6646325846939577,
+      "auroc_ci95": [
+       0.6339973688763426,
+       0.6952451089418475
+      ]
+     },
+     "stanford": {
+      "n_test": 1404,
+      "auroc": 0.6721488913783493,
+      "auroc_ci95": [
+       0.6185789104398487,
+       0.7251103590830598
+      ]
+     },
+     "utsw": {
+      "n_test": 621,
+      "auroc": 0.6325743436605699,
+      "auroc_ci95": [
+       0.5404582256837479,
+       0.7108799843528764
+      ]
+     }
+    }
+   },
+   "sha256": "c7aca79cd895600a39958edd9596ab73d29cd4256ad6efbf598f6815b81bbc5a"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ceftriaxone",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1920928955078125e-07,
+   "metrics": {
+    "auroc": 0.6818407773214124,
+    "auprc": 0.9051521464986798,
+    "ece": 0.0122259664021418,
+    "susc_pct": 83.88791593695272,
+    "n_train": 13428,
+    "n_test": 4568
+   },
+   "test": {
+    "n_test": 4568,
+    "n_patients": 3527,
+    "susceptible_pct": 83.88791593695272,
+    "point": {
+     "auroc": 0.6804664807797041,
+     "auprc": 0.9036361254403537,
+     "spec90": 0.33016304347826086,
+     "brier": 0.12688905267375644,
+     "ece": 0.03580746420523642,
+     "cal_slope": 0.9115488254477411,
+     "cal_intercept": -0.10372944386395219,
+     "oe_ratio": 0.9655548515853816
+    },
+    "ci95": {
+     "auroc": [
+      0.6563421779382411,
+      0.7041010313671431
+     ],
+     "auprc": [
+      0.8904136665521787,
+      0.9162635250109635
+     ],
+     "spec90": [
+      0.28151031340954147,
+      0.3697234617817647
+     ],
+     "brier": [
+      0.1185768088641867,
+      0.13539843186272124
+     ],
+     "ece": [
+      0.02518322176558673,
+      0.04723306561363944
+     ],
+     "cal_slope": [
+      0.7852617456092308,
+      1.0368904833178028
+     ],
+     "cal_intercept": [
+      -0.3568524522018247,
+      0.15089874215770469
+     ],
+     "oe_ratio": [
+      0.9517743584346195,
+      0.9788846479842485
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.010060623638467825,
+     "ci95": [
+      -0.0016056487429345345,
+      0.020872471322864045
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2543,
+      "auroc": 0.669606637179722,
+      "auroc_ci95": [
+       0.6399740198904613,
+       0.7000497493243186
+      ]
+     },
+     "stanford": {
+      "n_test": 1404,
+      "auroc": 0.6918210402697276,
+      "auroc_ci95": [
+       0.644710574606352,
+       0.7388646987720133
+      ]
+     },
+     "utsw": {
+      "n_test": 621,
+      "auroc": 0.6193231305213388,
+      "auroc_ci95": [
+       0.5219222631683179,
+       0.7065518102578833
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.011420748367897205,
+     "mean_width90": 0.027942652122204023
+    }
+   },
+   "sha256": "82bce28ed190b4210942a339bf2fedbc64cdd731eb46840acd349a87b4d42f2a"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ceftriaxone",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_ceftriaxone.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7013970242012345,
+    "auprc": 0.9133731908920356,
+    "ece": 0.0117868596521547,
+    "susc_pct": 83.88791593695272,
+    "n_train": 13428,
+    "n_test": 4568
+   },
+   "test": {
+    "n_test": 4568,
+    "n_patients": 3527,
+    "susceptible_pct": 83.88791593695272,
+    "point": {
+     "auroc": 0.7025546811178179,
+     "auprc": 0.9133983468095132,
+     "spec90": 0.33016304347826086,
+     "brier": 0.12501279288044578,
+     "ece": 0.019052586272918896,
+     "cal_slope": 1.029696420543936,
+     "cal_intercept": -0.16787773368091335,
+     "oe_ratio": 0.9832776255610491
+    },
+    "ci95": {
+     "auroc": [
+      0.6788023527096143,
+      0.7256033210506163
+     ],
+     "auprc": [
+      0.9016731800737686,
+      0.9244632689288013
+     ],
+     "spec90": [
+      0.28550445967232196,
+      0.37784218713484463
+     ],
+     "brier": [
+      0.11722388000815362,
+      0.13311308497960136
+     ],
+     "ece": [
+      0.01234907630647394,
+      0.032439943507927595
+     ],
+     "cal_slope": [
+      0.8981972469752947,
+      1.1720163103184906
+     ],
+     "cal_intercept": [
+      -0.4300268942495981,
+      0.07200143559872617
+     ],
+     "oe_ratio": [
+      0.9694992459637848,
+      0.9970222193179206
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0321488239765817,
+     "ci95": [
+      0.015279526152746947,
+      0.04891759629882635
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2543,
+      "auroc": 0.6593580233527628,
+      "auroc_ci95": [
+       0.6266159466713097,
+       0.690947252447919
+      ]
+     },
+     "stanford": {
+      "n_test": 1404,
+      "auroc": 0.6885901536430006,
+      "auroc_ci95": [
+       0.6399880823486094,
+       0.7376138858141367
+      ]
+     },
+     "utsw": {
+      "n_test": 621,
+      "auroc": 0.6370847331093692,
+      "auroc_ci95": [
+       0.5402660650633324,
+       0.724128857865583
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.015329236531542847,
+     "mean_width90": 0.04968192708742153
+    }
+   },
+   "sha256": "ce95bc2a57efe80e7485d480a4b9ca6410f1f5fdcf141e95d1b228e81836b92e"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "piperacillin_tazobactam",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_piperacillin_tazobactam.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6436955302940485,
+    "auprc": 0.9653918100834478,
+    "ece": 0.0047940422609373,
+    "susc_pct": 94.931592039801,
+    "n_train": 9529,
+    "n_test": 3216
+   },
+   "test": {
+    "n_test": 3216,
+    "n_patients": 2491,
+    "susceptible_pct": 94.93159203980099,
+    "point": {
+     "auroc": 0.6311452679552848,
+     "auprc": 0.9652325752324298,
+     "spec90": 0.26380368098159507,
+     "brier": 0.047523421786801086,
+     "ece": 0.005354409286780144,
+     "cal_slope": 0.8324003440040683,
+     "cal_intercept": 0.405915005749308,
+     "oe_ratio": 0.996288991090288
+    },
+    "ci95": {
+     "auroc": [
+      0.5843519020607295,
+      0.6799912380556269
+     ],
+     "auprc": [
+      0.9567827165144411,
+      0.9728832996708896
+     ],
+     "spec90": [
+      0.19203888967169228,
+      0.3431952662721893
+     ],
+     "brier": [
+      0.04082813174065455,
+      0.05421695425234808
+     ],
+     "ece": [
+      0.001615112224665596,
+      0.01391047698080196
+     ],
+     "cal_slope": [
+      0.5681814011756986,
+      1.111428507177484
+     ],
+     "cal_intercept": [
+      -0.45156809714460666,
+      1.1871413611942996
+     ],
+     "oe_ratio": [
+      0.9882182336745935,
+      1.004145537292824
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 1660,
+      "auroc": 0.6341134900643717,
+      "auroc_ci95": [
+       0.559277732961567,
+       0.704966345723821
+      ]
+     },
+     "stanford": {
+      "n_test": 1202,
+      "auroc": 0.6198628137769994,
+      "auroc_ci95": [
+       0.5461541625768911,
+       0.6951578785452847
+      ]
+     },
+     "utsw": {
+      "n_test": 354,
+      "auroc": 0.6215419954059722,
+      "auroc_ci95": [
+       0.5044834106805607,
+       0.7339625957351232
+      ]
+     }
+    }
+   },
+   "sha256": "c705c06577f1df65f547a6182b7a357ed6ebec7a51730aae9a91f1e4df440a92"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "piperacillin_tazobactam",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 5.873844266535144e-08,
+   "metrics": {
+    "auroc": 0.6426927953797833,
+    "auprc": 0.9660139338946692,
+    "ece": 0.0040338406714391,
+    "susc_pct": 94.931592039801,
+    "n_train": 9529,
+    "n_test": 3216
+   },
+   "test": {
+    "n_test": 3216,
+    "n_patients": 2491,
+    "susceptible_pct": 94.93159203980099,
+    "point": {
+     "auroc": 0.6276537811546121,
+     "auprc": 0.9640505197714996,
+     "spec90": 0.25766871165644173,
+     "brier": 0.047529467416382934,
+     "ece": 0.008604967379775508,
+     "cal_slope": 0.853259705176334,
+     "cal_intercept": 0.26881746963370834,
+     "oe_ratio": 0.9922871259048177
+    },
+    "ci95": {
+     "auroc": [
+      0.5819226887398399,
+      0.6729866730732904
+     ],
+     "auprc": [
+      0.9551830444232671,
+      0.9726319586183508
+     ],
+     "spec90": [
+      0.18006897077315856,
+      0.3374233128834356
+     ],
+     "brier": [
+      0.04072967181992682,
+      0.05426413517584365
+     ],
+     "ece": [
+      0.002325068669083083,
+      0.017001575325712965
+     ],
+     "cal_slope": [
+      0.5820716017095968,
+      1.1491747316091123
+     ],
+     "cal_intercept": [
+      -0.5737672204485431,
+      1.1240293759881972
+     ],
+     "oe_ratio": [
+      0.9842236278491497,
+      1.000204797608976
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.003491486800672683,
+     "ci95": [
+      -0.02258254015628753,
+      0.015691192360733908
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1660,
+      "auroc": 0.6113385110551357,
+      "auroc_ci95": [
+       0.5397116287115519,
+       0.6847213736267498
+      ]
+     },
+     "stanford": {
+      "n_test": 1202,
+      "auroc": 0.6190455341506129,
+      "auroc_ci95": [
+       0.5410665411895899,
+       0.698310379656279
+      ]
+     },
+     "utsw": {
+      "n_test": 354,
+      "auroc": 0.6520023968840507,
+      "auroc_ci95": [
+       0.5422129777936475,
+       0.7572333056400719
+      ]
+     }
+    }
+   },
+   "sha256": "de20fdaacc52036752fbd805e2fc491f40de03915d0708f7ae24fbf49f3457cd"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "piperacillin_tazobactam",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.6455181366412198,
+    "auprc": 0.965911359546308,
+    "ece": 0.0036064607735297,
+    "susc_pct": 94.931592039801,
+    "n_train": 9529,
+    "n_test": 3216
+   },
+   "test": {
+    "n_test": 3216,
+    "n_patients": 2491,
+    "susceptible_pct": 94.93159203980099,
+    "point": {
+     "auroc": 0.6299174702947318,
+     "auprc": 0.9656845167767467,
+     "spec90": 0.27607361963190186,
+     "brier": 0.04754352945602101,
+     "ece": 0.0037495127327651263,
+     "cal_slope": 0.8308853866864934,
+     "cal_intercept": 0.43672217392153967,
+     "oe_ratio": 0.9977869755681722
+    },
+    "ci95": {
+     "auroc": [
+      0.583424180189233,
+      0.6756466883113776
+     ],
+     "auprc": [
+      0.9567784715935607,
+      0.97331402154987
+     ],
+     "spec90": [
+      0.19875570729299494,
+      0.3617655347329857
+     ],
+     "brier": [
+      0.0408677181387493,
+      0.05428110513428904
+     ],
+     "ece": [
+      0.0014735062727212346,
+      0.012096055569534636
+     ],
+     "cal_slope": [
+      0.5696875690826144,
+      1.1065374569696473
+     ],
+     "cal_intercept": [
+      -0.34864636444601255,
+      1.23288066860973
+     ],
+     "oe_ratio": [
+      0.9897560244990314,
+      1.005731744534722
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.0012277976605530316,
+     "ci95": [
+      -0.020559946843056894,
+      0.01949752116725505
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1660,
+      "auroc": 0.6116446263643996,
+      "auroc_ci95": [
+       0.5418700093323832,
+       0.6869383561430419
+      ]
+     },
+     "stanford": {
+      "n_test": 1202,
+      "auroc": 0.6401123759486281,
+      "auroc_ci95": [
+       0.5637477895316308,
+       0.7130697174885938
+      ]
+     },
+     "utsw": {
+      "n_test": 354,
+      "auroc": 0.6371217417357435,
+      "auroc_ci95": [
+       0.5208824661996305,
+       0.7534820614788555
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.006779328515933292,
+     "mean_width90": 0.01640111490046207
+    }
+   },
+   "sha256": "1dca0fd7125202cc7a094f5169a663c25ad4fdafc19bc4678951b0f378f3dfe6"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "piperacillin_tazobactam",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_piperacillin_tazobactam.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.6455653596281642,
+    "auprc": 0.9663450798163954,
+    "ece": 0.0045398275984163,
+    "susc_pct": 94.931592039801,
+    "n_train": 9529,
+    "n_test": 3216
+   },
+   "test": {
+    "n_test": 3216,
+    "n_patients": 2491,
+    "susceptible_pct": 94.93159203980099,
+    "point": {
+     "auroc": 0.6271664801191225,
+     "auprc": 0.9635736963926058,
+     "spec90": 0.22699386503067484,
+     "brier": 0.047648148973317365,
+     "ece": 0.012623353323052162,
+     "cal_slope": 0.8162323777306839,
+     "cal_intercept": 0.2817593399391752,
+     "oe_ratio": 0.9875429023974199
+    },
+    "ci95": {
+     "auroc": [
+      0.5792080844748874,
+      0.6744336506588862
+     ],
+     "auprc": [
+      0.9542399219880777,
+      0.9721247752443805
+     ],
+     "spec90": [
+      0.15605984562666575,
+      0.3219779711218067
+     ],
+     "brier": [
+      0.04076245488107663,
+      0.054545772470413596
+     ],
+     "ece": [
+      0.005700449936031255,
+      0.020951503821497165
+     ],
+     "cal_slope": [
+      0.5413849090640839,
+      1.106387507922768
+     ],
+     "cal_intercept": [
+      -0.6350776878673429,
+      1.2025251697597417
+     ],
+     "oe_ratio": [
+      0.9796482105531116,
+      0.9953845042269699
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.003978787836162345,
+     "ci95": [
+      -0.02840586616078551,
+      0.020163461782892328
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1660,
+      "auroc": 0.6040617128463476,
+      "auroc_ci95": [
+       0.530838720373684,
+       0.6789587028469362
+      ]
+     },
+     "stanford": {
+      "n_test": 1202,
+      "auroc": 0.6139083479276124,
+      "auroc_ci95": [
+       0.5355282331366752,
+       0.6927863315502019
+      ]
+     },
+     "utsw": {
+      "n_test": 354,
+      "auroc": 0.6528013582342954,
+      "auroc_ci95": [
+       0.544145778209544,
+       0.7589036796701844
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.00870361668833465,
+     "mean_width90": 0.027905067997933616
+    }
+   },
+   "sha256": "27f2e99775ce9d095fa5570772c3bc387d30fce6a10c8fc83d2bf26895bdb8a4"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "meropenem",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_meropenem.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.7440449798009656,
+    "auprc": 0.9801592896188744,
+    "ece": 0.0043958202146891,
+    "susc_pct": 95.12428298279158,
+    "n_train": 12253,
+    "n_test": 4184
+   },
+   "test": {
+    "n_test": 4184,
+    "n_patients": 3245,
+    "susceptible_pct": 95.12428298279158,
+    "point": {
+     "auroc": 0.7156025224160015,
+     "auprc": 0.9743687851587877,
+     "spec90": 0.39705882352941174,
+     "brier": 0.04263504576018894,
+     "ece": 0.003876829473568878,
+     "cal_slope": 1.0734389869036636,
+     "cal_intercept": -0.2151462290319425,
+     "oe_ratio": 0.9992308339446793
+    },
+    "ci95": {
+     "auroc": [
+      0.6675643379927375,
+      0.7662240947047446
+     ],
+     "auprc": [
+      0.9672760149450013,
+      0.9803845880804631
+     ],
+     "spec90": [
+      0.31155572946700716,
+      0.48116129570879945
+     ],
+     "brier": [
+      0.037081604567208847,
+      0.04900053425728816
+     ],
+     "ece": [
+      0.0031880933069757095,
+      0.012533533752433221
+     ],
+     "cal_slope": [
+      0.8419932141394856,
+      1.2956986266916033
+     ],
+     "cal_intercept": [
+      -0.8495655344564237,
+      0.505849117294471
+     ],
+     "oe_ratio": [
+      0.9910830426075603,
+      1.0065762502296085
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 2099,
+      "auroc": 0.7070884030128382,
+      "auroc_ci95": [
+       0.6523172271965875,
+       0.7602668403561949
+      ]
+     },
+     "stanford": {
+      "n_test": 1352,
+      "auroc": 0.6283214820359282,
+      "auroc_ci95": [
+       0.48822168785202363,
+       0.7534426633622133
+      ]
+     },
+     "utsw": {
+      "n_test": 733,
+      "auroc": 0.6247474747474747,
+      "auroc_ci95": [
+       0.4670964156055171,
+       0.7927209090551409
+      ]
+     }
+    }
+   },
+   "sha256": "89a960b6693d03d127e43794ff352aebe337493bbe8b060c1ab8651361a6d49b"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "meropenem",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1231986685178441e-07,
+   "metrics": {
+    "auroc": 0.7606753128387033,
+    "auprc": 0.980311274048997,
+    "ece": 0.0046188066272437,
+    "susc_pct": 95.12428298279158,
+    "n_train": 12253,
+    "n_test": 4184
+   },
+   "test": {
+    "n_test": 4184,
+    "n_patients": 3245,
+    "susceptible_pct": 95.12428298279158,
+    "point": {
+     "auroc": 0.7388018523992511,
+     "auprc": 0.9778236202607402,
+     "spec90": 0.3872549019607843,
+     "brier": 0.043169288057950776,
+     "ece": 0.01768008230014184,
+     "cal_slope": 1.1120648301075444,
+     "cal_intercept": -0.8542301631004049,
+     "oe_ratio": 0.9817528493971545
+    },
+    "ci95": {
+     "auroc": [
+      0.6942538112798172,
+      0.7804973122638098
+     ],
+     "auprc": [
+      0.9718140811733373,
+      0.9831806717428495
+     ],
+     "spec90": [
+      0.29884376532113094,
+      0.483359375
+     ],
+     "brier": [
+      0.03715020514933838,
+      0.05003944749457557
+     ],
+     "ece": [
+      0.011473614954976757,
+      0.025933748813731797
+     ],
+     "cal_slope": [
+      0.8845527146015154,
+      1.316609551780863
+     ],
+     "cal_intercept": [
+      -1.5713040458906975,
+      -0.0652147896090133
+     ],
+     "oe_ratio": [
+      0.973420582417013,
+      0.9889633956160008
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.023199329983249584,
+     "ci95": [
+      0.0014343911938423642,
+      0.045024949991588334
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2099,
+      "auroc": 0.7114628121855274,
+      "auroc_ci95": [
+       0.6569447834839496,
+       0.7631139524370645
+      ]
+     },
+     "stanford": {
+      "n_test": 1352,
+      "auroc": 0.6002058383233533,
+      "auroc_ci95": [
+       0.4101048511627347,
+       0.7798224962578121
+      ]
+     },
+     "utsw": {
+      "n_test": 733,
+      "auroc": 0.6669386169386169,
+      "auroc_ci95": [
+       0.5103157242851687,
+       0.8043527479932465
+      ]
+     }
+    }
+   },
+   "sha256": "b173b012a38b55abce62e2410ce0bd1018ab7844eb5a9668dd9296eafc9c9dd7"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "meropenem",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1920928955078125e-07,
+   "metrics": {
+    "auroc": 0.762116341511479,
+    "auprc": 0.9800994886305472,
+    "ece": 0.0050677376056719,
+    "susc_pct": 95.12428298279158,
+    "n_train": 12253,
+    "n_test": 4184
+   },
+   "test": {
+    "n_test": 4184,
+    "n_patients": 3245,
+    "susceptible_pct": 95.12428298279158,
+    "point": {
+     "auroc": 0.7438405261602128,
+     "auprc": 0.9781175961896739,
+     "spec90": 0.4117647058823529,
+     "brier": 0.04307305617076498,
+     "ece": 0.018723243692929558,
+     "cal_slope": 1.0006203083029364,
+     "cal_intercept": -0.546140782126704,
+     "oe_ratio": 0.9806970117779902
+    },
+    "ci95": {
+     "auroc": [
+      0.6983441947882049,
+      0.7876413195825412
+     ],
+     "auprc": [
+      0.9720409575027642,
+      0.9833213357305194
+     ],
+     "spec90": [
+      0.3245650632635253,
+      0.5021922727373483
+     ],
+     "brier": [
+      0.03707079825811988,
+      0.05003517891265466
+     ],
+     "ece": [
+      0.013233510751418593,
+      0.026980725839731882
+     ],
+     "cal_slope": [
+      0.7946097344160449,
+      1.1923195936765585
+     ],
+     "cal_intercept": [
+      -1.193987421309306,
+      0.1806237301192571
+     ],
+     "oe_ratio": [
+      0.9725503799579496,
+      0.9878540896453469
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.02823800374421126,
+     "ci95": [
+      0.007945062428619058,
+      0.04831976686256096
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2099,
+      "auroc": 0.7150138749123288,
+      "auroc_ci95": [
+       0.6602940810686848,
+       0.7664682613940562
+      ]
+     },
+     "stanford": {
+      "n_test": 1352,
+      "auroc": 0.578686377245509,
+      "auroc_ci95": [
+       0.3892190654605567,
+       0.7604549154824263
+      ]
+     },
+     "utsw": {
+      "n_test": 733,
+      "auroc": 0.6821678321678322,
+      "auroc_ci95": [
+       0.5338774053895325,
+       0.8087056473964563
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.005919900992497735,
+     "mean_width90": 0.014392776804376057
+    }
+   },
+   "sha256": "91f1be83c2383ebff79017fc2cff3f9381b979016152802b62ede921a2544b0e"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "meropenem",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_meropenem.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7830451275987782,
+    "auprc": 0.9825329622118616,
+    "ece": 0.0043229602961079,
+    "susc_pct": 95.12428298279158,
+    "n_train": 12253,
+    "n_test": 4184
+   },
+   "test": {
+    "n_test": 4184,
+    "n_patients": 3245,
+    "susceptible_pct": 95.12428298279158,
+    "point": {
+     "auroc": 0.7819483446644989,
+     "auprc": 0.9816252170894673,
+     "spec90": 0.45098039215686275,
+     "brier": 0.04226628159023162,
+     "ece": 0.01395563339469548,
+     "cal_slope": 1.1260818517843076,
+     "cal_intercept": -0.7305401992539375,
+     "oe_ratio": 0.9860368150855965
+    },
+    "ci95": {
+     "auroc": [
+      0.7365352642582219,
+      0.8225381401245896
+     ],
+     "auprc": [
+      0.9759451938945269,
+      0.9863664050603421
+     ],
+     "spec90": [
+      0.366042865605958,
+      0.544565594059406
+     ],
+     "brier": [
+      0.03644396732135776,
+      0.048813964093852386
+     ],
+     "ece": [
+      0.007683588127691005,
+      0.0215181215722171
+     ],
+     "cal_slope": [
+      0.9153316738884023,
+      1.3390351616198743
+     ],
+     "cal_intercept": [
+      -1.374901982777505,
+      -0.045320529824278484
+     ],
+     "oe_ratio": [
+      0.9776441952271218,
+      0.9931182579943698
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.06634582224849739,
+     "ci95": [
+      0.03901415400650927,
+      0.09394710099146625
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2099,
+      "auroc": 0.7172750282072393,
+      "auroc_ci95": [
+       0.6622968493150412,
+       0.7710024959461221
+      ]
+     },
+     "stanford": {
+      "n_test": 1352,
+      "auroc": 0.6545658682634731,
+      "auroc_ci95": [
+       0.45905867462603883,
+       0.8200676843317972
+      ]
+     },
+     "utsw": {
+      "n_test": 733,
+      "auroc": 0.6256021756021756,
+      "auroc_ci95": [
+       0.45894135757880994,
+       0.784825276874619
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.007387262211672791,
+     "mean_width90": 0.023824150230999083
+    }
+   },
+   "sha256": "bf68774373094afc46a482f9610b92266903104ed7ca1d70ff8cb21945570322"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ciprofloxacin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_ciprofloxacin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6550278803110029,
+    "auprc": 0.8432594255528646,
+    "ece": 0.0150143812635335,
+    "susc_pct": 76.9396551724138,
+    "n_train": 13727,
+    "n_test": 4640
+   },
+   "test": {
+    "n_test": 4640,
+    "n_patients": 3471,
+    "susceptible_pct": 76.9396551724138,
+    "point": {
+     "auroc": 0.6724542527291291,
+     "auprc": 0.8522858514623444,
+     "spec90": 0.3233644859813084,
+     "brier": 0.16295944514555086,
+     "ece": 0.01637757017823129,
+     "cal_slope": 0.9416403756473964,
+     "cal_intercept": 0.08258696054770193,
+     "oe_ratio": 1.0036736448987562
+    },
+    "ci95": {
+     "auroc": [
+      0.6492312347419422,
+      0.6938655997521354
+     ],
+     "auprc": [
+      0.8368040521518919,
+      0.8675544592384402
+     ],
+     "spec90": [
+      0.2899674418264733,
+      0.368503025928652
+     ],
+     "brier": [
+      0.15576152424152187,
+      0.17057639770723382
+     ],
+     "ece": [
+      0.011478294053636956,
+      0.0319507370981795
+     ],
+     "cal_slope": [
+      0.8247001241941905,
+      1.0660251579705036
+     ],
+     "cal_intercept": [
+      -0.1018287523907957,
+      0.2522161415608214
+     ],
+     "oe_ratio": [
+      0.9861234438125129,
+      1.02074400869052
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 2623,
+      "auroc": 0.6637068073913008,
+      "auroc_ci95": [
+       0.631733754272261,
+       0.6949400220495584
+      ]
+     },
+     "stanford": {
+      "n_test": 1312,
+      "auroc": 0.6795241973297796,
+      "auroc_ci95": [
+       0.6402055723374094,
+       0.7177521069289217
+      ]
+     },
+     "utsw": {
+      "n_test": 705,
+      "auroc": 0.6814929903165198,
+      "auroc_ci95": [
+       0.6322746270558846,
+       0.730218219203469
+      ]
+     }
+    }
+   },
+   "sha256": "9f681cd8f6443add177cf9d9ff6a8b4db0f22c6a47619a25c4af443dc9c89b57"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ciprofloxacin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.2261038551120151e-07,
+   "metrics": {
+    "auroc": 0.6482924945679206,
+    "auprc": 0.8365300574504003,
+    "ece": 0.0261583999612927,
+    "susc_pct": 76.9396551724138,
+    "n_train": 13727,
+    "n_test": 4640
+   },
+   "test": {
+    "n_test": 4640,
+    "n_patients": 3471,
+    "susceptible_pct": 76.9396551724138,
+    "point": {
+     "auroc": 0.6485493075734967,
+     "auprc": 0.8374742821256869,
+     "spec90": 0.32897196261682243,
+     "brier": 0.1637709814066841,
+     "ece": 0.023883686275703687,
+     "cal_slope": 0.9223385182842269,
+     "cal_intercept": 0.1255781131702639,
+     "oe_ratio": 1.0086216493990843
+    },
+    "ci95": {
+     "auroc": [
+      0.6261433435813816,
+      0.6725372323276113
+     ],
+     "auprc": [
+      0.8211516835204413,
+      0.8544864111608433
+     ],
+     "spec90": [
+      0.29243334803870785,
+      0.3740315583157153
+     ],
+     "brier": [
+      0.15653825860815637,
+      0.1713970562821336
+     ],
+     "ece": [
+      0.01597681552789786,
+      0.037379508659014654
+     ],
+     "cal_slope": [
+      0.8068376414017903,
+      1.0572133463884248
+     ],
+     "cal_intercept": [
+      -0.042283704934439746,
+      0.2797344317741452
+     ],
+     "oe_ratio": [
+      0.9902454327135652,
+      1.0253717646039984
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.02390494515563235,
+     "ci95": [
+      -0.03615106661347493,
+      -0.011808974397179864
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2623,
+      "auroc": 0.6224357251634866,
+      "auroc_ci95": [
+       0.5900902901411155,
+       0.652634874773427
+      ]
+     },
+     "stanford": {
+      "n_test": 1312,
+      "auroc": 0.6769435248742275,
+      "auroc_ci95": [
+       0.635487831236648,
+       0.7169945581690349
+      ]
+     },
+     "utsw": {
+      "n_test": 705,
+      "auroc": 0.6835989924225219,
+      "auroc_ci95": [
+       0.6329326381928918,
+       0.732500391944942
+      ]
+     }
+    }
+   },
+   "sha256": "79f446cf019b6d5fa98308eeef4825a4414e355abccb73e7e13bf18b9eb40d7b"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ciprofloxacin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.6530960234561114,
+    "auprc": 0.8362214105553085,
+    "ece": 0.0168984684264608,
+    "susc_pct": 76.9396551724138,
+    "n_train": 13727,
+    "n_test": 4640
+   },
+   "test": {
+    "n_test": 4640,
+    "n_patients": 3471,
+    "susceptible_pct": 76.9396551724138,
+    "point": {
+     "auroc": 0.6573819995287835,
+     "auprc": 0.8393490980701307,
+     "spec90": 0.3317757009345794,
+     "brier": 0.16329179802833602,
+     "ece": 0.014067673737757889,
+     "cal_slope": 0.9451104789543535,
+     "cal_intercept": 0.08244218014862978,
+     "oe_ratio": 1.004505713446733
+    },
+    "ci95": {
+     "auroc": [
+      0.6333734908338553,
+      0.6813750721893055
+     ],
+     "auprc": [
+      0.8223316711730825,
+      0.856713809784752
+     ],
+     "spec90": [
+      0.2930352309820985,
+      0.37144571956206307
+     ],
+     "brier": [
+      0.1559953373839592,
+      0.1707538161808656
+     ],
+     "ece": [
+      0.009129673659037718,
+      0.029222894665079567
+     ],
+     "cal_slope": [
+      0.8275627740340067,
+      1.0772746690787591
+     ],
+     "cal_intercept": [
+      -0.09145996729165624,
+      0.24556894680076588
+     ],
+     "oe_ratio": [
+      0.9865868227972134,
+      1.0211456649834596
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.015072253200345553,
+     "ci95": [
+      -0.026033294952917327,
+      -0.0034917692543405547
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2623,
+      "auroc": 0.6351392180336013,
+      "auroc_ci95": [
+       0.6012279649240876,
+       0.6688471142575401
+      ]
+     },
+     "stanford": {
+      "n_test": 1312,
+      "auroc": 0.6856374296220302,
+      "auroc_ci95": [
+       0.6467480019284401,
+       0.7253269721153252
+      ]
+     },
+     "utsw": {
+      "n_test": 705,
+      "auroc": 0.6799341358164888,
+      "auroc_ci95": [
+       0.6303958407800151,
+       0.7265730080039776
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.01686350410530728,
+     "mean_width90": 0.041174035069757496
+    }
+   },
+   "sha256": "d340fbe14235293849708ea958f62152989dc1c8caaf987375668a125a453661"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "ciprofloxacin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.6503323385428937,
+    "auprc": 0.8379111901456481,
+    "ece": 0.0238296427828227,
+    "susc_pct": 76.9396551724138,
+    "n_train": 13727,
+    "n_test": 4640
+   },
+   "test": {
+    "n_test": 4640,
+    "n_patients": 3471,
+    "susceptible_pct": 76.9396551724138,
+    "point": {
+     "auroc": 0.6490955260608916,
+     "auprc": 0.8398279107051798,
+     "spec90": 0.32897196261682243,
+     "brier": 0.16411896461095155,
+     "ece": 0.02140333646021138,
+     "cal_slope": 0.9479958506180751,
+     "cal_intercept": 0.11782071897084613,
+     "oe_ratio": 1.0134445102581966
+    },
+    "ci95": {
+     "auroc": [
+      0.6267485936638226,
+      0.6722434154911237
+     ],
+     "auprc": [
+      0.8238257254700296,
+      0.8549831414794847
+     ],
+     "spec90": [
+      0.28882237554112555,
+      0.36720784365038883
+     ],
+     "brier": [
+      0.15698950272936885,
+      0.17165809460954712
+     ],
+     "ece": [
+      0.01578896502924544,
+      0.035100164148288426
+     ],
+     "cal_slope": [
+      0.8309593488815317,
+      1.0894125467942273
+     ],
+     "cal_intercept": [
+      -0.054695622653805044,
+      0.28051331459805506
+     ],
+     "oe_ratio": [
+      0.9948923806469772,
+      1.0303610370257228
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.02335872666823746,
+     "ci95": [
+      -0.03554375050826765,
+      -0.010862043187748673
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2623,
+      "auroc": 0.6204413118011614,
+      "auroc_ci95": [
+       0.5873055816313041,
+       0.650446088319324
+      ]
+     },
+     "stanford": {
+      "n_test": 1312,
+      "auroc": 0.673118347805547,
+      "auroc_ci95": [
+       0.6320768908662157,
+       0.711259879391396
+      ]
+     },
+     "utsw": {
+      "n_test": 705,
+      "auroc": 0.6808735779324014,
+      "auroc_ci95": [
+       0.6305150977822322,
+       0.7293734231253374
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.019587991697259968,
+     "mean_width90": 0.06353194472396038
+    }
+   },
+   "sha256": "306033ee73f88a215228dc7a14d84e636e7959c9322c155d8e8d21dea52d2369"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "gentamicin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_gentamicin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6115542980863777,
+    "auprc": 0.9285312114784432,
+    "ece": 0.0067136301190922,
+    "susc_pct": 89.68253968253968,
+    "n_train": 17733,
+    "n_test": 6048
+   },
+   "test": {
+    "n_test": 6048,
+    "n_patients": 4424,
+    "susceptible_pct": 89.68253968253968,
+    "point": {
+     "auroc": 0.6158149499375992,
+     "auprc": 0.9273913098066078,
+     "spec90": 0.20192307692307693,
+     "brier": 0.09127471146014139,
+     "ece": 0.007677880426247914,
+     "cal_slope": 0.9562213642780487,
+     "cal_intercept": 0.05210406239736465,
+     "oe_ratio": 0.9958346408418687
+    },
+    "ci95": {
+     "auroc": [
+      0.5866437322847862,
+      0.6422405502702159
+     ],
+     "auprc": [
+      0.9166915123789107,
+      0.9368167060920776
+     ],
+     "spec90": [
+      0.15975230414746544,
+      0.24356809165883703
+     ],
+     "brier": [
+      0.08418661770711852,
+      0.0983309097918641
+     ],
+     "ece": [
+      0.0031697374472843417,
+      0.017252604657373043
+     ],
+     "cal_slope": [
+      0.708074646798062,
+      1.1716238765234035
+     ],
+     "cal_intercept": [
+      -0.4211454284949073,
+      0.5899092860250723
+     ],
+     "oe_ratio": [
+      0.9855502949116804,
+      1.006428719776204
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 2754,
+      "auroc": 0.5846051937047686,
+      "auroc_ci95": [
+       0.5379150724649565,
+       0.6276285381783443
+      ]
+     },
+     "stanford": {
+      "n_test": 1916,
+      "auroc": 0.6597011710648074,
+      "auroc_ci95": [
+       0.6099847472114024,
+       0.7058166778272129
+      ]
+     },
+     "utsw": {
+      "n_test": 1378,
+      "auroc": 0.5784597319280559,
+      "auroc_ci95": [
+       0.5311695320690234,
+       0.6232141315480536
+      ]
+     }
+    }
+   },
+   "sha256": "61cea3931e927417ed0c91d956614c7401c4a3dc8a9941814ae3f7f31a44a8d0"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "gentamicin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.043614414886207e-07,
+   "metrics": {
+    "auroc": 0.6123688757469178,
+    "auprc": 0.9267771475116118,
+    "ece": 0.0060687990673601,
+    "susc_pct": 89.68253968253968,
+    "n_train": 17733,
+    "n_test": 6048
+   },
+   "test": {
+    "n_test": 6048,
+    "n_patients": 4424,
+    "susceptible_pct": 89.68253968253968,
+    "point": {
+     "auroc": 0.6119778371057408,
+     "auprc": 0.9258457857081135,
+     "spec90": 0.21153846153846154,
+     "brier": 0.09110023096873623,
+     "ece": 0.00760512534115958,
+     "cal_slope": 0.8198148181477779,
+     "cal_intercept": 0.36784439134654856,
+     "oe_ratio": 0.9989694616245671
+    },
+    "ci95": {
+     "auroc": [
+      0.5826993318886984,
+      0.6380883046940727
+     ],
+     "auprc": [
+      0.9159061809794687,
+      0.9362045941684731
+     ],
+     "spec90": [
+      0.17252120744739452,
+      0.25304972146943694
+     ],
+     "brier": [
+      0.08416852446605527,
+      0.09811404332860264
+     ],
+     "ece": [
+      0.0034073520407877133,
+      0.01805463115640803
+     ],
+     "cal_slope": [
+      0.6065572164373343,
+      1.0071646019841385
+     ],
+     "cal_intercept": [
+      -0.021619250761845784,
+      0.8196130986503724
+     ],
+     "oe_ratio": [
+      0.9889576289554152,
+      1.0096363649086688
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.0038371128318583914,
+     "ci95": [
+      -0.01588068268886027,
+      0.008923338859915605
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2754,
+      "auroc": 0.5593893681154589,
+      "auroc_ci95": [
+       0.5148707413037258,
+       0.603017670612023
+      ]
+     },
+     "stanford": {
+      "n_test": 1916,
+      "auroc": 0.6635462203644021,
+      "auroc_ci95": [
+       0.614009935074459,
+       0.7087565825102914
+      ]
+     },
+     "utsw": {
+      "n_test": 1378,
+      "auroc": 0.5802139420323061,
+      "auroc_ci95": [
+       0.5306823302736237,
+       0.6276530408940416
+      ]
+     }
+    }
+   },
+   "sha256": "4fabd03bdd480cd6e202263f3c220f7a79a57610b0f858eab64dddfb4ca1d19b"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "gentamicin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.1920928955078125e-07,
+   "metrics": {
+    "auroc": 0.6139197347023675,
+    "auprc": 0.9280824618887225,
+    "ece": 0.0094649639887311,
+    "susc_pct": 89.68253968253968,
+    "n_train": 17733,
+    "n_test": 6048
+   },
+   "test": {
+    "n_test": 6048,
+    "n_patients": 4424,
+    "susceptible_pct": 89.68253968253968,
+    "point": {
+     "auroc": 0.610642219291279,
+     "auprc": 0.923210586888577,
+     "spec90": 0.22115384615384615,
+     "brier": 0.0909383939134987,
+     "ece": 0.006152222262168571,
+     "cal_slope": 0.9024228246766435,
+     "cal_intercept": 0.18590998094665398,
+     "oe_ratio": 0.997980366485602
+    },
+    "ci95": {
+     "auroc": [
+      0.5798054509373459,
+      0.6371148351988488
+     ],
+     "auprc": [
+      0.9125777331232787,
+      0.9334863009170723
+     ],
+     "spec90": [
+      0.17791160840280626,
+      0.25842643897417267
+     ],
+     "brier": [
+      0.08392227013258571,
+      0.09796431793534209
+     ],
+     "ece": [
+      0.002788256880706584,
+      0.016010057157140992
+     ],
+     "cal_slope": [
+      0.6793998729542768,
+      1.1035971731673504
+     ],
+     "cal_intercept": [
+      -0.24822150240231422,
+      0.6782412998780195
+     ],
+     "oe_ratio": [
+      0.9879401963054687,
+      1.0086840765059581
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.005172730646320178,
+     "ci95": [
+      -0.01774716372059177,
+      0.0072427021602372325
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2754,
+      "auroc": 0.5529128641080135,
+      "auroc_ci95": [
+       0.5065151980176194,
+       0.5966806410258871
+      ]
+     },
+     "stanford": {
+      "n_test": 1916,
+      "auroc": 0.6638812661539935,
+      "auroc_ci95": [
+       0.6136707458479411,
+       0.7102086143511264
+      ]
+     },
+     "utsw": {
+      "n_test": 1378,
+      "auroc": 0.5842927788597395,
+      "auroc_ci95": [
+       0.5355352434464397,
+       0.6300321369138354
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.008361634660664587,
+     "mean_width90": 0.02048586580764365
+    }
+   },
+   "sha256": "d288d281727e97e131341a88c5946a3332bcadb2c850b6b1d3ddc3a886550dd1"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "gentamicin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_gentamicin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.6137495509038651,
+    "auprc": 0.923938938199385,
+    "ece": 0.0070591704653842,
+    "susc_pct": 89.68253968253968,
+    "n_train": 17733,
+    "n_test": 6048
+   },
+   "test": {
+    "n_test": 6048,
+    "n_patients": 4424,
+    "susceptible_pct": 89.68253968253968,
+    "point": {
+     "auroc": 0.6155929132629907,
+     "auprc": 0.925954834722707,
+     "spec90": 0.21634615384615385,
+     "brier": 0.09110221127434809,
+     "ece": 0.016224406235678408,
+     "cal_slope": 0.7951970858699003,
+     "cal_intercept": 0.2865385754899742,
+     "oe_ratio": 0.9839000400436918
+    },
+    "ci95": {
+     "auroc": [
+      0.5853704165875137,
+      0.6414165871459047
+     ],
+     "auprc": [
+      0.9152661741570044,
+      0.9356564076484023
+     ],
+     "spec90": [
+      0.17565973507754332,
+      0.25357877893765174
+     ],
+     "brier": [
+      0.08388318057242279,
+      0.09832446101642262
+     ],
+     "ece": [
+      0.009185836316236071,
+      0.0262557900412217
+     ],
+     "cal_slope": [
+      0.6089999390370953,
+      0.9672381162007615
+     ],
+     "cal_intercept": [
+      -0.11624465011009356,
+      0.7372581771289388
+     ],
+     "oe_ratio": [
+      0.9739697867427853,
+      0.9942318155620269
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.00022203667460851673,
+     "ci95": [
+      -0.018698081558645153,
+      0.018203809915757003
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2754,
+      "auroc": 0.5780965676265089,
+      "auroc_ci95": [
+       0.533214260245619,
+       0.6225365470402577
+      ]
+     },
+     "stanford": {
+      "n_test": 1916,
+      "auroc": 0.6652826084644267,
+      "auroc_ci95": [
+       0.6166633719398366,
+       0.7114616758977125
+      ]
+     },
+     "utsw": {
+      "n_test": 1378,
+      "auroc": 0.5858369610875626,
+      "auroc_ci95": [
+       0.5366121263166868,
+       0.6325542964269205
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.0105151213233621,
+     "mean_width90": 0.034072210748123104
+    }
+   },
+   "sha256": "3933364a8336f9db5feab0fdd0378207efe48139b507b85787c8ae061b49b510"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "amikacin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/inpatient_blood_amikacin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.6775726169684714,
+    "auprc": 0.9870653279299428,
+    "ece": 0.0069509609690252,
+    "susc_pct": 97.91969037252056,
+    "n_train": 6168,
+    "n_test": 2067
+   },
+   "test": {
+    "n_test": 2067,
+    "n_patients": 1607,
+    "susceptible_pct": 97.91969037252056,
+    "point": {
+     "auroc": 0.6383341759352882,
+     "auprc": 0.9865254861700652,
+     "spec90": 0.37209302325581395,
+     "brier": 0.01984820465126073,
+     "ece": 0.006679900296944377,
+     "cal_slope": 1.435493554069305,
+     "cal_intercept": -2.1570463039991896,
+     "oe_ratio": 0.9932244066705983
+    },
+    "ci95": {
+     "auroc": [
+      0.5303564943106185,
+      0.7334342863115725
+     ],
+     "auprc": [
+      0.9796545177544804,
+      0.992143993096339
+     ],
+     "spec90": [
+      0.20930232558139536,
+      0.5313020833333333
+     ],
+     "brier": [
+      0.013849336302543015,
+      0.026800969775726866
+     ],
+     "ece": [
+      0.0012878677205709905,
+      0.013868933058094068
+     ],
+     "cal_slope": [
+      0.8269556499014531,
+      1.8888784971499488
+     ],
+     "cal_intercept": [
+      -4.1066492702916255,
+      0.40391237854710094
+     ],
+     "oe_ratio": [
+      0.9859353898313079,
+      0.9996826013798853
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 1025,
+      "auroc": 0.5111356035269079,
+      "auroc_ci95": [
+       0.35319786013208154,
+       0.6602525465224748
+      ]
+     },
+     "stanford": {
+      "n_test": 900,
+      "auroc": 0.8431460674157303,
+      "auroc_ci95": [
+       0.6325707231399654,
+       0.9722093609238877
+      ]
+     },
+     "utsw": {
+      "n_test": 142,
+      "auroc": 0.5422131147540984,
+      "auroc_ci95": [
+       0.34570830588145857,
+       0.710096986603239
+      ]
+     }
+    }
+   },
+   "sha256": "866d13fdacd689be54d318187161a68cda80cbb792b0b7d748af275da6d9ae17"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "amikacin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/inpatient_blood_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.9464865685936417e-07,
+   "metrics": {
+    "auroc": 0.6404311058001655,
+    "auprc": 0.9872222424292028,
+    "ece": 0.0060777616058048,
+    "susc_pct": 97.91969037252056,
+    "n_train": 6168,
+    "n_test": 2067
+   },
+   "test": {
+    "n_test": 2067,
+    "n_patients": 1607,
+    "susceptible_pct": 97.91969037252056,
+    "point": {
+     "auroc": 0.6132112326500597,
+     "auprc": 0.9859174973445091,
+     "spec90": 0.3488372093023256,
+     "brier": 0.019595344360030548,
+     "ece": 0.008531023916063968,
+     "cal_slope": 0.8131913244867709,
+     "cal_intercept": 0.22258486143294626,
+     "oe_ratio": 0.9916915836697956
+    },
+    "ci95": {
+     "auroc": [
+      0.5010947577973154,
+      0.7084294632840376
+     ],
+     "auprc": [
+      0.9791568052749449,
+      0.9916785463633006
+     ],
+     "spec90": [
+      0.17142857142857143,
+      0.5102149370386453
+     ],
+     "brier": [
+      0.013638429523831864,
+      0.026259666867646653
+     ],
+     "ece": [
+      0.002902476784162922,
+      0.015695714900105805
+     ],
+     "cal_slope": [
+      0.37129051847382455,
+      1.1255704764519858
+     ],
+     "cal_intercept": [
+      -1.0931996646742101,
+      2.263116971899549
+     ],
+     "oe_ratio": [
+      0.9846044053051789,
+      0.9982817327087935
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.02512294328522846,
+     "ci95": [
+      -0.07971753070644753,
+      0.02472249488124956
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1025,
+      "auroc": 0.4591441167528124,
+      "auroc_ci95": [
+       0.3032889901710066,
+       0.6339764868138285
+      ]
+     },
+     "stanford": {
+      "n_test": 900,
+      "auroc": 0.8311797752808989,
+      "auroc_ci95": [
+       0.6385375939849625,
+       0.9812873173234811
+      ]
+     },
+     "utsw": {
+      "n_test": 142,
+      "auroc": 0.48381147540983604,
+      "auroc_ci95": [
+       0.27224177301322916,
+       0.6545853923330337
+      ]
+     }
+    }
+   },
+   "sha256": "5017c2ac209d5c0689b2269e878d190f3df160f02ae74d8a63e16aaf95916e0d"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "amikacin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/inpatient_blood_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.3113021846145045e-07,
+   "metrics": {
+    "auroc": 0.6488992554462726,
+    "auprc": 0.9874174819127484,
+    "ece": 0.0051978558921906,
+    "susc_pct": 97.91969037252056,
+    "n_train": 6168,
+    "n_test": 2067
+   },
+   "test": {
+    "n_test": 2067,
+    "n_patients": 1607,
+    "susceptible_pct": 97.91969037252056,
+    "point": {
+     "auroc": 0.6231386156815883,
+     "auprc": 0.985894960575261,
+     "spec90": 0.32558139534883723,
+     "brier": 0.019298016561612074,
+     "ece": 0.006664271223759475,
+     "cal_slope": 0.7873580484824144,
+     "cal_intercept": 0.40948828187978203,
+     "oe_ratio": 0.9932661783543856
+    },
+    "ci95": {
+     "auroc": [
+      0.5126632123286272,
+      0.7208574028680972
+     ],
+     "auprc": [
+      0.9784885799548937,
+      0.9918767833007511
+     ],
+     "spec90": [
+      0.17073170731707318,
+      0.4865038115038115
+     ],
+     "brier": [
+      0.013411797474706607,
+      0.025711737208143803
+     ],
+     "ece": [
+      0.0023244679843760605,
+      0.013956129206402074
+     ],
+     "cal_slope": [
+      0.3598027325308228,
+      1.0673290521762688
+     ],
+     "cal_intercept": [
+      -0.7149638968756388,
+      2.286733022660833
+     ],
+     "oe_ratio": [
+      0.9862986620703211,
+      0.9997531118697226
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.015195560253699836,
+     "ci95": [
+      -0.060091839424888875,
+      0.03272711909144057
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1025,
+      "auroc": 0.47054575858923686,
+      "auroc_ci95": [
+       0.3143877637877225,
+       0.6496961268187182
+      ]
+     },
+     "stanford": {
+      "n_test": 900,
+      "auroc": 0.8462359550561798,
+      "auroc_ci95": [
+       0.6748185461266091,
+       0.9809599734974517
+      ]
+     },
+     "utsw": {
+      "n_test": 142,
+      "auroc": 0.49815573770491806,
+      "auroc_ci95": [
+       0.28735142528998014,
+       0.6711504500108436
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.003807614175315305,
+     "mean_width90": 0.009316992557850446
+    }
+   },
+   "sha256": "46505ceab71e5b76bf6b9c558e03040c873eabdc7f02ab22cf0b7e16bbcc152f"
+  },
+  {
+   "setting": "inpatient",
+   "specimen": "blood",
+   "drug": "amikacin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/inpatient_blood_amikacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7293122070043202,
+    "auprc": 0.9869651382011502,
+    "ece": 0.0050973918452953,
+    "susc_pct": 97.91969037252056,
+    "n_train": 6168,
+    "n_test": 2067
+   },
+   "test": {
+    "n_test": 2067,
+    "n_patients": 1607,
+    "susceptible_pct": 97.91969037252056,
+    "point": {
+     "auroc": 0.7136398106443607,
+     "auprc": 0.9876787703937233,
+     "spec90": 0.5116279069767442,
+     "brier": 0.019381498266008903,
+     "ece": 0.009398901743993927,
+     "cal_slope": 0.9264203812634726,
+     "cal_intercept": -0.3483862979264804,
+     "oe_ratio": 0.9904926748707614
+    },
+    "ci95": {
+     "auroc": [
+      0.593855573248841,
+      0.8176896276164564
+     ],
+     "auprc": [
+      0.9798640463384437,
+      0.9941303011500996
+     ],
+     "spec90": [
+      0.3170410783055199,
+      0.6666666666666666
+     ],
+     "brier": [
+      0.013452971451538984,
+      0.0259113140771387
+     ],
+     "ece": [
+      0.004007272523315134,
+      0.016708362483245625
+     ],
+     "cal_slope": [
+      0.5528982037960138,
+      1.2538546614010824
+     ],
+     "cal_intercept": [
+      -1.6740551252504985,
+      1.3253748173612576
+     ],
+     "oe_ratio": [
+      0.9833948444760977,
+      0.9969825115026321
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.07530563470907248,
+     "ci95": [
+      -0.028232727843887702,
+      0.1827057173190413
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 1025,
+      "auroc": 0.4317041653998176,
+      "auroc_ci95": [
+       0.27276875654963034,
+       0.6037252522287626
+      ]
+     },
+     "stanford": {
+      "n_test": 900,
+      "auroc": 0.8190449438202247,
+      "auroc_ci95": [
+       0.6158134638097048,
+       0.9767004310107863
+      ]
+     },
+     "utsw": {
+      "n_test": 142,
+      "auroc": 0.4829918032786885,
+      "auroc_ci95": [
+       0.27141033889726635,
+       0.6504653944911297
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.005673081321537011,
+     "mean_width90": 0.0173578637648044
+    }
+   },
+   "sha256": "5035c0ec4e49732e752f57af936d79c2cb5234c91a2d0626cbbb3d713a5c6d3e"
+  },
+  {
+   "setting": "outpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "xgboost",
+   "features": "shared",
+   "file": "xgboost/shared/outpatient_urine_ciprofloxacin.json",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "metrics": {
+    "auroc": 0.7248867937523926,
+    "auprc": 0.8944803987169307,
+    "ece": 0.0079523283926368,
+    "susc_pct": 79.90060392551585,
+    "n_train": 48150,
+    "n_test": 15896
+   },
+   "test": {
+    "n_test": 15896,
+    "n_patients": 9219,
+    "susceptible_pct": 79.90060392551585,
+    "point": {
+     "auroc": 0.7252281097726339,
+     "auprc": 0.8936864143317834,
+     "spec90": 0.38466353677621284,
+     "brier": 0.1393404516507941,
+     "ece": 0.008419387281563454,
+     "cal_slope": 0.9949690042528836,
+     "cal_intercept": -0.03517741508832262,
+     "oe_ratio": 0.992899968811615
+    },
+    "ci95": {
+     "auroc": [
+      0.7127966626456658,
+      0.7379473148377321
+     ],
+     "auprc": [
+      0.8862317231881766,
+      0.9007953380900613
+     ],
+     "spec90": [
+      0.35609353549000283,
+      0.4168514888520607
+     ],
+     "brier": [
+      0.1349120052173068,
+      0.14435979631202334
+     ],
+     "ece": [
+      0.006081820880365304,
+      0.01655493640621494
+     ],
+     "cal_slope": [
+      0.935983786115314,
+      1.0615547901462388
+     ],
+     "cal_intercept": [
+      -0.14077618341667597,
+      0.06554509386226237
+     ],
+     "oe_ratio": [
+      0.983185850504781,
+      1.0016864577004667
+     ]
+    },
+    "n_boot": 1000,
+    "by_site": {
+     "ecuh": {
+      "n_test": 2482,
+      "auroc": 0.7507219350621586,
+      "auroc_ci95": [
+       0.7238297828438638,
+       0.7789996939318433
+      ]
+     },
+     "stanford": {
+      "n_test": 8271,
+      "auroc": 0.7208148264234691,
+      "auroc_ci95": [
+       0.6997379621583695,
+       0.7402048705106004
+      ]
+     },
+     "utsw": {
+      "n_test": 5143,
+      "auroc": 0.7066248893230528,
+      "auroc_ci95": [
+       0.6855334441174054,
+       0.7287393732586366
+      ]
+     }
+    }
+   },
+   "sha256": "3eaf013e4bbc3ef6a28a67dd3aa3292fe3febb95fb459a2a68eb1bc66c6d10b0"
+  },
+  {
+   "setting": "outpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "logistic",
+   "features": "shared",
+   "file": "logistic/shared/outpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.5148285742450085e-07,
+   "metrics": {
+    "auroc": 0.7288518555893533,
+    "auprc": 0.8980869220005461,
+    "ece": 0.0162889329179616,
+    "susc_pct": 79.90060392551585,
+    "n_train": 48150,
+    "n_test": 15896
+   },
+   "test": {
+    "n_test": 15896,
+    "n_patients": 9219,
+    "susceptible_pct": 79.90060392551585,
+    "point": {
+     "auroc": 0.7285280113613471,
+     "auprc": 0.8979480464480072,
+     "spec90": 0.3837245696400626,
+     "brier": 0.13918627240252532,
+     "ece": 0.014078853074109545,
+     "cal_slope": 1.0004882036910674,
+     "cal_intercept": -0.04671189874718126,
+     "oe_ratio": 0.9921538433004495
+    },
+    "ci95": {
+     "auroc": [
+      0.7160499036754466,
+      0.7417453245444705
+     ],
+     "auprc": [
+      0.8906579065272613,
+      0.9049592152792039
+     ],
+     "spec90": [
+      0.3556092148289178,
+      0.41036629568742067
+     ],
+     "brier": [
+      0.13482713428078283,
+      0.14395249469402271
+     ],
+     "ece": [
+      0.009783252156418992,
+      0.02120596324120448
+     ],
+     "cal_slope": [
+      0.9418533605162986,
+      1.0640651355976996
+     ],
+     "cal_intercept": [
+      -0.15271832851779002,
+      0.055567411169916515
+     ],
+     "oe_ratio": [
+      0.9826923377225304,
+      1.0007498074682732
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.0032999015887132943,
+     "ci95": [
+      -0.0003842755952283561,
+      0.007060135561394548
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2482,
+      "auroc": 0.748824905557698,
+      "auroc_ci95": [
+       0.7216827699503531,
+       0.7753621545547602
+      ]
+     },
+     "stanford": {
+      "n_test": 8271,
+      "auroc": 0.7258811277545512,
+      "auroc_ci95": [
+       0.7049228543011566,
+       0.7459462484709545
+      ]
+     },
+     "utsw": {
+      "n_test": 5143,
+      "auroc": 0.7074969765047041,
+      "auroc_ci95": [
+       0.6859171653772259,
+       0.7306345091017858
+      ]
+     }
+    }
+   },
+   "sha256": "beceb0912b37bd5d58e0a91587187538563b23c0f7d7ff47cb9804ccfd9c1529"
+  },
+  {
+   "setting": "outpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "mlp_ensemble",
+   "features": "shared",
+   "file": "mlp_ensemble/shared/outpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 1.0728836064011205e-07,
+   "metrics": {
+    "auroc": 0.7296457748142267,
+    "auprc": 0.8985158246034793,
+    "ece": 0.0104276124894183,
+    "susc_pct": 79.90060392551585,
+    "n_train": 48150,
+    "n_test": 15896
+   },
+   "test": {
+    "n_test": 15896,
+    "n_patients": 9219,
+    "susceptible_pct": 79.90060392551585,
+    "point": {
+     "auroc": 0.7280526997553826,
+     "auprc": 0.8980514192817244,
+     "spec90": 0.37902973395931144,
+     "brier": 0.1396324506204025,
+     "ece": 0.0131497921042395,
+     "cal_slope": 0.9023149007043594,
+     "cal_intercept": 0.1402100175678232,
+     "oe_ratio": 1.0041442923483779
+    },
+    "ci95": {
+     "auroc": [
+      0.7155149012795627,
+      0.7409328158912708
+     ],
+     "auprc": [
+      0.8907034328030781,
+      0.9050694612937424
+     ],
+     "spec90": [
+      0.34766059000927935,
+      0.4092687379365093
+     ],
+     "brier": [
+      0.135277715107253,
+      0.14457460212780404
+     ],
+     "ece": [
+      0.008092090729534533,
+      0.020572951716434244
+     ],
+     "cal_slope": [
+      0.8490932361012328,
+      0.9599557145687614
+     ],
+     "cal_intercept": [
+      0.04327342709716086,
+      0.2343394270701016
+     ],
+     "oe_ratio": [
+      0.9947103226869222,
+      1.0129791932094425
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": 0.002824589982748704,
+     "ci95": [
+      -4.8268234355947056e-05,
+      0.005737099162597522
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2482,
+      "auroc": 0.7497486141813313,
+      "auroc_ci95": [
+       0.7207160427910158,
+       0.7768821522223158
+      ]
+     },
+     "stanford": {
+      "n_test": 8271,
+      "auroc": 0.7277409015767735,
+      "auroc_ci95": [
+       0.707300375749886,
+       0.7464693588862809
+      ]
+     },
+     "utsw": {
+      "n_test": 5143,
+      "auroc": 0.7043044156359716,
+      "auroc_ci95": [
+       0.684399142043225,
+       0.7266789555287895
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.01371947943802235,
+     "mean_width90": 0.033384037992172225
+    }
+   },
+   "sha256": "9ac078b846438b325f67f66221056d3e51195b7e6df317f7b4ba3d3b2142d4dd"
+  },
+  {
+   "setting": "outpatient",
+   "specimen": "urine",
+   "drug": "ciprofloxacin",
+   "family": "bayes_logistic",
+   "features": "shared",
+   "file": "bayes_logistic/shared/outpatient_urine_ciprofloxacin.npz",
+   "columns": [
+    "age_band_1",
+    "age_band_2",
+    "age_band_3",
+    "age_band_4",
+    "age_band_5",
+    "age_band_6",
+    "age_band_7",
+    "age_band_8",
+    "female",
+    "care_icu",
+    "care_ward",
+    "prior_r_any",
+    "prior_r_count",
+    "prior_r_same",
+    "prior_positive_culture",
+    "prior_abx_cephalosporin",
+    "prior_abx_bl_bli",
+    "prior_abx_carbapenem",
+    "prior_abx_fluoroquinolone",
+    "prior_abx_aminoglycoside",
+    "prior_abx_any",
+    "prior_abx_within_90d",
+    "prior_abx_courses_90d",
+    "procedure_urinary_catheter",
+    "nursing_home",
+    "comorb_diabetes_obs",
+    "comorb_ckd_obs",
+    "comorb_hiv_obs",
+    "comorb_immunosuppressed",
+    "comorb_count"
+   ],
+   "check_max_abs_diff": 0.0,
+   "metrics": {
+    "auroc": 0.7301244378500135,
+    "auprc": 0.8993891593526,
+    "ece": 0.0170981250403361,
+    "susc_pct": 79.90060392551585,
+    "n_train": 48150,
+    "n_test": 15896
+   },
+   "test": {
+    "n_test": 15896,
+    "n_patients": 9219,
+    "susceptible_pct": 79.90060392551585,
+    "point": {
+     "auroc": 0.697618550361209,
+     "auprc": 0.8813689451672224,
+     "spec90": 0.37621283255086074,
+     "brier": 0.144509446482661,
+     "ece": 0.04493880402886224,
+     "cal_slope": 0.8980639695649092,
+     "cal_intercept": -0.19044181698323806,
+     "oe_ratio": 0.9468658144909624
+    },
+    "ci95": {
+     "auroc": [
+      0.6834625250987328,
+      0.711073134160813
+     ],
+     "auprc": [
+      0.8734644887514601,
+      0.889350047880195
+     ],
+     "spec90": [
+      0.3375416998501869,
+      0.4112279566612214
+     ],
+     "brier": [
+      0.13944949900655865,
+      0.1499652559825856
+     ],
+     "ece": [
+      0.039027611816983304,
+      0.05338860430311867
+     ],
+     "cal_slope": [
+      0.8336518853107361,
+      0.9613685463928803
+     ],
+     "cal_intercept": [
+      -0.3141498525778496,
+      -0.06435208396022667
+     ],
+     "oe_ratio": [
+      0.9373232061288688,
+      0.9556747988039955
+     ]
+    },
+    "n_boot": 1000,
+    "auroc_vs_xgboost_shared": {
+     "point": -0.027609559411424844,
+     "ci95": [
+      -0.03493368755447507,
+      -0.020205466862690428
+     ]
+    },
+    "by_site": {
+     "ecuh": {
+      "n_test": 2482,
+      "auroc": 0.751076381394483,
+      "auroc_ci95": [
+       0.7240135752311099,
+       0.7777251862289075
+      ]
+     },
+     "stanford": {
+      "n_test": 8271,
+      "auroc": 0.7265556673356621,
+      "auroc_ci95": [
+       0.7063180337075818,
+       0.7460869457190951
+      ]
+     },
+     "utsw": {
+      "n_test": 5143,
+      "auroc": 0.7071744293293603,
+      "auroc_ci95": [
+       0.6859982220289937,
+       0.7300605484309124
+      ]
+     }
+    },
+    "draws": {
+     "mean_sd": 0.00874608733964259,
+     "mean_width90": 0.028525948274278824
+    }
+   },
+   "sha256": "0a2ac2590c9ec24efba41a835afd453caa7ccfcd9dfd99cb49331f227276f07f"
+  }
+ ]
+}

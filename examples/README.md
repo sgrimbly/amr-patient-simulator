@@ -9,6 +9,15 @@
 
 The default run takes about ten seconds on a laptop CPU.
 
+| File | What it is | Run it? |
+|---|---|---|
+| `full_loop.py` | The whole pipeline, printed as a table per outcome setting | yes |
+| `decision_frontier.py` | Published decision rules on the trade-off between deaths averted and days on *B* (needs matplotlib) | yes |
+| `predictors.py` | The record table, culture labels, the hidden truth for scoring, and two simple predictors | imported |
+| `policies.py` | Reference decision models and the `MyPolicy` template | imported |
+| `decision_rules.py` | Four published decision rules, their parameter ranges and effective thresholds | imported |
+| `armd_models.py` | Predictors trained on real records (ARMD): download, load, and map simulated records to their features | imported |
+
 ## What does the script do?
 
 For each of the three outcome settings of the calibrated US-like site (`ettb/calibrated_us_site.json`) it does four things.
@@ -63,6 +72,27 @@ A decision model needs `reset(first_look)` and `act(day)`. `act` is called every
 Requests where `can_step` is false are ignored, and a step-up cannot be undone. `first_look["presenting_severity"]` is the severity reading at presentation. Start from `MyPolicy` in `policies.py`, then add it to the `rules` dictionary in `full_loop.py`. `ettb/loop.py` describes the interface in full.
 
 The decision model can be written in numpy, PyTorch or anything else that returns an array, because `run_loop` calls it once per day from Python. The simulator itself stays compiled.
+
+## Can I use a predictor trained on real patients?
+
+Yes. By default `full_loop.py` trains its predictor on simulated culture results. With `--armd` it uses a model trained on the Antibiotic Resistance Microbiology Dataset (ARMD) instead, which has never seen a simulated patient.
+
+```bash
+.venv/bin/python -I examples/full_loop.py --armd mlp_ensemble   # or logistic, bayes_logistic, xgboost (needs xgboost)
+```
+
+The first run downloads the weights from the repository's GitHub release and checks their checksums. `armd_models.py` turns each simulated record into the 30 features the models share with ARMD, and picks the model for each patient's cell: urine or blood, and ceftriaxone or piperacillin–tazobactam as drug *A*. The models predict that the isolate tests susceptible, so P(*A* fails) is taken as one minus that.
+
+```python
+import armd_models as AM
+AM.fetch()
+m = AM.load("bayes_logistic", "inpatient_blood_ceftriaxone")
+X = AM.shared_features(world, obs, "ceftriaxone")
+draws = m.predict_draws(X)          # posterior draws of P(susceptible), one row per draw
+AM.test_metrics()                   # AUROC, calibration and more on real test patients, with 95% intervals
+```
+
+Expect these models to do worse on simulated patients than on real ones. Part of that is the simulator's record layer, which is being recalibrated to ARMD, and part is that they predict a laboratory result, not true failure of *A*. `models/README.md` describes the models, their statistics and their limits.
 
 ## What do the built-in rules show?
 

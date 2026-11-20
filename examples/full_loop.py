@@ -2,6 +2,7 @@
 
     .venv/bin/python -I examples/full_loop.py            # all three outcome settings, 50,000 patients each
     .venv/bin/python -I examples/full_loop.py --n 10000 --theta1 0.9
+    .venv/bin/python -I examples/full_loop.py --armd mlp_ensemble   # predictor trained on real records (ARMD)
 
 Steps, for each outcome setting of the calibrated US-like site (ettb/calibrated_us_site.json):
   1. Simulate a historical cohort and train the predictor on its culture results.
@@ -58,17 +59,24 @@ def print_trace(i, r, p_fail, truth, world):
     print(f"    died by day 30: {'yes' if r['died'][i] else 'no'}")
 
 
-def simulate_site(theta1, n, params=CALIBRATED_US_SITE) -> dict:
+def simulate_site(theta1, n, params=CALIBRATED_US_SITE, armd=None) -> dict:
     """Steps 1 and 2: train the predictor on a historical cohort's culture results, then simulate new patients and
-    predict P(drug A fails) from their records. Returns the new cohort with its predictions and hidden truth."""
+    predict P(drug A fails) from their records. Returns the new cohort with its predictions and hidden truth.
+    With `armd` set to a model family, step 1 is skipped and a predictor trained on real records is used instead
+    (models/README.md)."""
     world_params, env_params = calibrated_site(theta1, params)
-    hist = sample_world(1, n, world_params)
-    hist_obs = observe(1, hist, world_params)
-    y, labelled = pred.culture_labels(hist, hist_obs)
-    model = pred.Logistic().fit(pred.record_table(hist, hist_obs)[labelled], y[labelled])
     world = sample_world(2, n, world_params, start_id=n)
     obs = observe(2, world, world_params)
-    p_fail = model.predict(pred.record_table(world, obs))
+    if armd:
+        import armd_models as AM
+        AM.fetch()
+        p_fail = AM.p_drug_a_fails(world, obs, armd)
+    else:
+        hist = sample_world(1, n, world_params)
+        hist_obs = observe(1, hist, world_params)
+        y, labelled = pred.culture_labels(hist, hist_obs)
+        model = pred.Logistic().fit(pred.record_table(hist, hist_obs)[labelled], y[labelled])
+        p_fail = model.predict(pred.record_table(world, obs))
     y_new, lab_new = pred.culture_labels(world, obs)
     return dict(world=world, obs=obs, env_params=env_params, p_fail=p_fail, truth=pred.truth(world, env_params),
                 auroc_culture=pred.auroc(p_fail[lab_new], y_new[lab_new]))
@@ -79,11 +87,13 @@ def main():
     ap.add_argument("--n", type=int, default=50_000)
     ap.add_argument("--theta1", type=float, nargs="*", default=[0.6, 0.9, 1.2])
     ap.add_argument("--params", default=str(CALIBRATED_US_SITE))
+    ap.add_argument("--armd", choices=["logistic", "mlp_ensemble", "bayes_logistic", "xgboost"],
+                    help="use a predictor trained on ARMD instead of one trained on simulated culture results")
     args = ap.parse_args()
 
     for theta1 in args.theta1:
         print(f"\n=== Outcome setting theta1 = {theta1} ===")
-        s = simulate_site(theta1, args.n, args.params)
+        s = simulate_site(theta1, args.n, args.params, args.armd)
         world, obs, env_params, p_fail, truth = s["world"], s["obs"], s["env_params"], s["p_fail"], s["truth"]
         print(f"  Predictor: AUROC {s['auroc_culture']:.3f} against culture results "
               f"(cultured patients only), {pred.auroc(p_fail, truth['a_fails']):.3f} against true failure of A "
