@@ -17,6 +17,7 @@ The default run takes about ten seconds on a laptop CPU.
 | `policies.py` | Reference decision models and the `MyPolicy` template | imported |
 | `decision_rules.py` | Four published decision rules, their parameter ranges and effective thresholds | imported |
 | `armd_models.py` | Predictors trained on real records (ARMD): download, load, and map simulated records to their features | imported |
+| `wisca.py` | A Bayesian syndromic antibiogram (WISCA): how often each regimen covers each syndrome, with an interval; also a predictor with no patient-level features | imported |
 
 ## What does the script do?
 
