@@ -1,7 +1,7 @@
 {
- "name": "armd-models-v0.9",
- "tag": "models-v0.9",
- "asset": "armd-models-v0.9.tar.gz",
- "url": "https://github.com/sgrimbly/amr-patient-simulator/releases/download/models-v0.9/armd-models-v0.9.tar.gz",
- "sha256": "5f2fcc24be2599cbe143e87c302b21da2ba8990cc95d99d25512372dbb97d9e5"
+ "name": "armd-models-v1",
+ "tag": "models-v1",
+ "asset": "armd-models-v1.tar.gz",
+ "url": "https://github.com/sgrimbly/amr-patient-simulator/releases/download/models-v1/armd-models-v1.tar.gz",
+ "sha256": "a8387f2159bd12161eab7e9094e45ea7ccef64d7ecbd680b6029ec1d4d2e099d"
 }

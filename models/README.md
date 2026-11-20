@@ -6,11 +6,10 @@ never seen simulated data. The weights are in a GitHub release; this folder hold
 (files, columns, checksums), the test statistics (`test_metrics.csv`) and `release.json` (which release to download
 and its checksum).
 
-**Current release: [`models-v0.9`](https://github.com/sgrimbly/amr-patient-simulator/releases/tag/models-v0.9),
-interim.** It holds the shared-feature models only. The XGBoost models are final. The logistic, MLP ensemble and
-Bayesian models come from an earlier training run on an earlier version of the ARMD feature tables, and their
-statistics are computed on the current tables, so treat them as preliminary. `models-v1` will replace all of them,
-add the full-feature models, and keep the same interface; `fetch()` follows `release.json`.
+**Current release: [`models-v1`](https://github.com/sgrimbly/amr-patient-simulator/releases/tag/models-v1).**
+All families are trained on the final ARMD feature tables: 52 shared-feature models (XGBoost, logistic, MLP
+ensemble and Bayesian, 13 cells each) and 39 full-feature models (XGBoost, logistic and MLP ensemble). It replaces
+the interim `models-v0.9`, with the same interface.
 
 ```python
 import sys; sys.path.insert(0, "examples")
@@ -70,25 +69,29 @@ together. All models in a cell share the same resamples, so differences between 
 | `draw_mean_sd`, `draw_mean_width90` | for models with draws: mean sd of P(susceptible) across draws, and the mean width of its 90% interval |
 
 These intervals describe sampling uncertainty in the test split of these three sites. They say nothing about
-performance at another hospital, which can be much worse (leave-one-site-out costs about 0.03 AUROC here).
+performance at another hospital. When a site is left out of training and used as the test site, AUROC falls by
+only about 0.005, but calibration error roughly doubles (about 0.017 to 0.03), so expect to recalibrate on local
+isolates.
 
 Shared-feature models, pooled test split: AUROC (95% interval) and calibration slope.
 
 | Cell | Test orders | Susceptible | XGBoost | Logistic | MLP ensemble | Bayesian |
 |---|---|---|---|---|---|---|
-| inpatient urine ceftriaxone | 24,849 | 89.8% | 0.732 (0.717–0.744); slope 1.03 | 0.725 (0.710–0.738); slope 1.04 | 0.725 (0.710–0.737); slope 1.10 | 0.742 (0.728–0.755); slope 1.05 |
-| inpatient urine piperacillin-tazobactam | 24,574 | 96.1% | 0.662 (0.643–0.681); slope 1.02 | 0.663 (0.644–0.683); slope 1.00 | 0.658 (0.638–0.678); slope 1.17 | 0.672 (0.653–0.690); slope 0.93 |
-| inpatient urine meropenem | 18,461 | 98.9% | 0.781 (0.740–0.819); slope 0.94 | 0.771 (0.729–0.810); slope 0.93 | 0.778 (0.737–0.815); slope 0.89 | 0.738 (0.692–0.778); slope 0.80 |
-| inpatient urine ciprofloxacin | 31,893 | 77.9% | 0.722 (0.714–0.731); slope 1.01 | 0.719 (0.710–0.727); slope 0.99 | 0.720 (0.712–0.729); slope 0.98 | 0.724 (0.716–0.733); slope 0.99 |
-| inpatient urine gentamicin | 31,161 | 89.8% | 0.629 (0.615–0.645); slope 1.04 | 0.630 (0.615–0.646); slope 1.03 | 0.630 (0.615–0.645); slope 0.99 | 0.637 (0.622–0.652); slope 1.01 |
-| inpatient urine amikacin | 13,151 | 99.1% | 0.761 (0.717–0.810); slope 0.99 | 0.765 (0.723–0.811); slope 0.89 | 0.765 (0.721–0.812); slope 0.89 | 0.736 (0.686–0.787); slope 0.81 |
-| inpatient blood ceftriaxone | 4,568 | 83.9% | 0.670 (0.645–0.695); slope 0.91 | 0.676 (0.651–0.701); slope 0.99 | 0.680 (0.656–0.704); slope 0.91 | 0.703 (0.679–0.726); slope 1.03 |
-| inpatient blood piperacillin-tazobactam | 3,216 | 94.9% | 0.631 (0.584–0.680); slope 0.83 | 0.628 (0.582–0.673); slope 0.85 | 0.630 (0.583–0.676); slope 0.83 | 0.627 (0.579–0.674); slope 0.82 |
-| inpatient blood meropenem | 4,184 | 95.1% | 0.716 (0.668–0.766); slope 1.07 | 0.739 (0.694–0.780); slope 1.11 | 0.744 (0.698–0.788); slope 1.00 | 0.782 (0.737–0.823); slope 1.13 |
-| inpatient blood ciprofloxacin | 4,640 | 76.9% | 0.672 (0.649–0.694); slope 0.94 | 0.649 (0.626–0.673); slope 0.92 | 0.657 (0.633–0.681); slope 0.95 | 0.649 (0.627–0.672); slope 0.95 |
-| inpatient blood gentamicin | 6,048 | 89.7% | 0.616 (0.587–0.642); slope 0.96 | 0.612 (0.583–0.638); slope 0.82 | 0.611 (0.580–0.637); slope 0.90 | 0.616 (0.585–0.641); slope 0.80 |
-| inpatient blood amikacin | 2,067 | 97.9% | 0.638 (0.530–0.733); slope 1.44 | 0.613 (0.501–0.708); slope 0.81 | 0.623 (0.513–0.721); slope 0.79 | 0.714 (0.594–0.818); slope 0.93 |
-| outpatient urine ciprofloxacin | 15,896 | 79.9% | 0.725 (0.713–0.738); slope 0.99 | 0.729 (0.716–0.742); slope 1.00 | 0.728 (0.716–0.741); slope 0.90 | 0.698 (0.683–0.711); slope 0.90 |
+| inpatient urine ceftriaxone | 24,849 | 89.8% | 0.732 (0.717–0.744); slope 1.03 | 0.731 (0.716–0.743); slope 1.02 | 0.733 (0.719–0.745); slope 1.06 | 0.743 (0.730–0.755); slope 1.03 |
+| inpatient urine piperacillin-tazobactam | 24,574 | 96.1% | 0.662 (0.643–0.681); slope 1.02 | 0.665 (0.645–0.684); slope 0.99 | 0.666 (0.646–0.685); slope 1.05 | 0.676 (0.657–0.694); slope 1.03 |
+| inpatient urine meropenem | 18,461 | 98.9% | 0.781 (0.740–0.819); slope 0.94 | 0.775 (0.733–0.814); slope 0.93 | 0.778 (0.736–0.816); slope 0.93 | 0.789 (0.748–0.826); slope 0.97 |
+| inpatient urine ciprofloxacin | 31,893 | 77.9% | 0.722 (0.714–0.731); slope 1.01 | 0.723 (0.714–0.731); slope 1.00 | 0.724 (0.716–0.733); slope 1.01 | 0.729 (0.720–0.737); slope 1.00 |
+| inpatient urine gentamicin | 31,161 | 89.8% | 0.629 (0.615–0.645); slope 1.04 | 0.632 (0.617–0.648); slope 1.03 | 0.632 (0.617–0.648); slope 0.98 | 0.640 (0.624–0.655); slope 1.00 |
+| inpatient urine amikacin | 13,151 | 99.1% | 0.761 (0.717–0.810); slope 0.99 | 0.764 (0.721–0.809); slope 0.89 | 0.766 (0.718–0.814); slope 0.92 | 0.800 (0.756–0.846); slope 0.97 |
+| inpatient blood ceftriaxone | 4,568 | 83.9% | 0.670 (0.645–0.695); slope 0.91 | 0.676 (0.651–0.702); slope 0.97 | 0.681 (0.657–0.706); slope 0.97 | 0.704 (0.681–0.727); slope 1.02 |
+| inpatient blood piperacillin-tazobactam | 3,216 | 94.9% | 0.631 (0.584–0.680); slope 0.83 | 0.632 (0.587–0.678); slope 0.88 | 0.632 (0.585–0.678); slope 0.83 | 0.640 (0.597–0.689); slope 0.93 |
+| inpatient blood meropenem | 4,184 | 95.1% | 0.716 (0.668–0.766); slope 1.07 | 0.743 (0.697–0.786); slope 1.12 | 0.744 (0.700–0.787); slope 1.13 | 0.787 (0.744–0.828); slope 1.11 |
+| inpatient blood ciprofloxacin | 4,640 | 76.9% | 0.672 (0.649–0.694); slope 0.94 | 0.668 (0.644–0.688); slope 0.93 | 0.676 (0.652–0.698); slope 0.98 | 0.667 (0.644–0.688); slope 0.96 |
+| inpatient blood gentamicin | 6,048 | 89.7% | 0.616 (0.587–0.642); slope 0.96 | 0.621 (0.592–0.648); slope 0.86 | 0.619 (0.590–0.647); slope 0.88 | 0.629 (0.601–0.654); slope 0.84 |
+| inpatient blood amikacin | 2,067 | 97.9% | 0.638 (0.530–0.733); slope 1.44 | 0.625 (0.516–0.721); slope 0.88 | 0.624 (0.516–0.718); slope 0.86 | 0.725 (0.601–0.834); slope 1.02 |
+| outpatient urine ciprofloxacin | 15,896 | 79.9% | 0.725 (0.713–0.738); slope 0.99 | 0.728 (0.715–0.741); slope 0.99 | 0.728 (0.715–0.741); slope 0.95 | 0.729 (0.717–0.742); slope 0.99 |
+
+Full-feature models (pooled test split, mean over the 13 cells): XGBoost AUROC 0.734, logistic 0.718, MLP ensemble 0.717; all with calibration error below 0.01. The Bayesian model's higher AUROC on shared features comes partly from its site intercepts: on ARMD it knows each patient's hospital, which the other families do not.
 
 ## Limits
 
@@ -98,8 +101,38 @@ Shared-feature models, pooled test split: AUROC (95% interval) and calibration s
 - The target is the laboratory result for a cultured isolate. It is not whether the drug would fail: tests miss
   some failures (for example piperacillin-tazobactam against OXA-1 co-producers), and patients without a positive
   culture are not in the training data.
-- On simulated patients the models are less accurate than on ARMD (AUROC roughly 0.59 to 0.64 against 0.65 to 0.75),
-  because the simulator's records differ from real ones in age, sex and history depth. That gap is under work.
+- On simulated patients the shared-feature models reach an AUROC of about 0.66 against culture results and 0.62
+  against true failure of drug *A*, below their AUROC on ARMD. The simulator's records differ from real ones in
+  age, sex and history depth; that gap is under work. Models that do not know the site also predict too little
+  resistance for simulated patients, which a local intercept correction fixes.
+
+## Comparison with ARMD-Predict
+
+On the nine cells that ARMD-Predict reports (Table 1, four sites including MGB), full-feature XGBoost averages
+0.730 AUROC against the paper's 0.731, and is within about 0.025 in every cell. Shared-feature models, which run
+on simulated patients, average about 0.685. The two are not evaluated on the same patients (MGB is not public and
+our feature construction is our own), so differences in single cells are not evidence that either is better.
+
+## Planned improvements
+
+Changing model family on the same features has moved AUROC by about 0.01; adding features moves it by 0.02 to
+0.13. The plan therefore puts information and targets ahead of architectures. Each candidate must beat XGBoost on
+paired patient resamples, hold up when a site is left out, and not worsen calibration.
+
+- **Tabular foundation models** (TabPFN, TabICL and similar in-context learners), first on the blood cells, which
+  have 6,000 to 18,000 training orders and are where in-context learners are strongest.
+- **Blending** XGBoost with the event-history transformer, which ties XGBoost on urine cells.
+- **Joint models across drugs and specimens**, so that blood cells borrow from the larger urine cells and
+  cross-resistance is shared.
+- **Tuned gradient boosting**: the current settings are ARMD-Predict's defaults.
+- **Predictions that update as microbiology arrives** (organism identification before susceptibility), matching
+  the daily decision loop.
+- **Pretraining on all culture orders** (masked or next-event prediction) before fine-tuning each cell.
+- **Transport**: site-specific effects, recalibration on a few hundred local isolates, and priors from a local
+  antibiogram.
+- **Uncertainty with guarantees**: class-conditional conformal prediction, with coverage checked on a left-out site.
+- **The decision's target**: P(drug *A* fails) rather than the laboratory result, and training weighted toward the
+  high-sensitivity end where step-up decisions are made.
 
 ## Files in the release
 
