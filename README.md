@@ -107,6 +107,7 @@ Because the truth is known, the two stages can be scored separately. The predict
 | `examples/decision_rules.py`, `examples/decision_frontier.py` | Four published decision rules and their place on the trade-off |
 | `examples/armd_models.py` | Downloads and loads the ARMD-trained predictors, and maps simulated records to their features |
 | `models/` | Model card, manifest, test statistics and release pointer for the ARMD-trained predictors (weights in the release) |
+| `docs/ASSUMPTIONS.md` | What the simulator assumes, how well each assumption is supported, and the parameter that changes it |
 | `figures/` | The diagrams used in this README |
 | `tests/` | Exact replay and counterfactual invariances (`test_ettb.py`), `run_loop` against `run_policy` (`test_loop.py`), decision rules, and the model loader (`test_armd_models.py`) |
 
